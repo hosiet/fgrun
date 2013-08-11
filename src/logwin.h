@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-// $Id: logwin.h 209 2003-12-11 11:40:45Z bbright $
+// $Id$
 
 #ifndef logwin_h_included
 #define logwin_h_included

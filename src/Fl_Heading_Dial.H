@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-// $Id: Fl_Heading_Dial.H 201 2003-12-10 00:56:18Z bbright $
+// $Id$
 
 #ifndef Fl_Heading_Dial_H
 #define Fl_Heading_Dial_H

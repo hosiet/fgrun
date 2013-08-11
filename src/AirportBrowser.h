@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-// $Id: AirportBrowser.h 584 2010-12-11 12:48:36Z fredb $
+// $Id$
 
 #ifndef AirportBrowser_h_included
 #define AirportBrowser_h_included

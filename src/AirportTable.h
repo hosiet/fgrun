@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-// $Id: AirportTable.h 188 2003-11-25 10:37:48Z bbright $
+// $Id$
 
 #ifndef AirportTable_h_included
 #define AirportTable_h_included

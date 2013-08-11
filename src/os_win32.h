@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-// $Id: os_win32.h 272 2004-04-30 07:10:19Z bbright $
+// $Id$
  
 namespace os {
     const char searchPathSep = ';';

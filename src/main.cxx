@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-// $Id: main.cxx 632 2011-11-04 22:34:18Z fredb $
+// $Id$
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -41,6 +41,7 @@ std::string def_fg_exe = "";
 std::string def_fg_root = "";
 std::string def_fg_scenery = "";
 std::string def_ts_exe = "";
+std::string version = "";
 int def_ts_dir = -1;
 static bool silent = false;
 static bool fullscreen = false;
@@ -99,20 +100,36 @@ parse_args( int, char** argv, int& i )
         ++i;
         return 1;
     }
+    else if (strncmp( argv[i], "--version=", 10 ) == 0)
+    {
+        version.assign( &argv[i][10] );
+        ++i;
+        return 1;
+    }
     return 0;
 }
 
 string
 get_locale_directory( const char *argv0 )
 {
-#if _MSC_VER && !defined(LOCALEDIR)
-    SGPath path = argv0;
+#ifdef LOCALEDIR
+    SGPath localedir( LOCALEDIR );
+    if (localedir.exists())
+        return localedir.str();
+#endif
+
+    SGPath path( argv0 );
     path = path.dir();
+
+    if (path.file() == "bin")
+    {
+        SGPath path2 = path.dir();
+        path2.append( "share/locale" );
+        if (path2.exists() )
+            return path2.str();
+    }
     path.append( "locale" );
     return path.str();
-#else
-    return LOCALEDIR;
-#endif
 }
 
 int
@@ -142,12 +159,12 @@ main( int argc, char* argv[] )
     int i = 0;
     if (Fl::args( argc, argv, i, parse_args ) < argc)
     {
-        Fl::fatal(_("Options are:\n --silent\n --fg-exe=<PATH>\n --fg-root=<DIR>\n --fg-scenery=<DIR>\n --ts-exe=<PATH>\n --ts-dir=#\n -f, --fullscreen\n%s"), Fl::help );
+        Fl::fatal(_("Options are:\n --silent\n --fg-exe=<PATH>\n --fg-root=<DIR>\n --fg-scenery=<DIR>\n --ts-exe=<PATH>\n --ts-dir=#\n --version=<VERSION>\n -f, --fullscreen\n%s"), Fl::help );
     }
 
     if ( silent )
     {
-        Fl_Preferences prefs( Fl_Preferences::USER, "flightgear.org", "fgrun" );
+        Fl_Preferences prefs( Fl_Preferences::SYSTEM, "flightgear.org", "fgrun" );
         char abs_name[ FL_PATH_MAX ];
 
         if ( !def_fg_exe.empty() )
@@ -183,6 +200,17 @@ main( int argc, char* argv[] )
         {
             prefs.set( "ts_dir_init", def_ts_dir );
             prefs.set( "ts_dir", def_ts_dir );
+        }
+
+        if ( !version.empty() )
+        {
+            int major, minor, patch;
+            char c1, c2;
+            std::istringstream iss(version);
+            iss >> major >> c1 >> minor >> c2 >> patch;
+            if (c1 == '.' && c2 == '.') {
+                prefs.set("version", major * 10000 + minor * 100 + patch);
+            }
         }
 
         return 0;

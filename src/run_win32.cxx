@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-// $Id: run_win32.cxx 624 2011-07-20 06:55:17Z fredb $
+// $Id$
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -30,6 +30,7 @@
 #include <FL/filename.h>
 #include <sstream>
 #include <time.h>
+#include <boost/scoped_array.hpp>
 
 using std::string;
 
@@ -244,7 +245,7 @@ Wizard::run_fgfs(const string &args)
     strcat( cmd, " " );
     strcat( cmd, line.c_str() );
 
-    std::auto_ptr<char> childenv;
+    boost::scoped_array<char> childenv;
     int iVal;
     prefs.get( "env-count", iVal, 0 );
     if ( iVal > 0 )

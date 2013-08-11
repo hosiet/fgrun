@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-// $Id: io.cxx 569 2010-11-07 12:19:41Z fredb $
+// $Id$
 
 #include <sstream>
 #include <string>
