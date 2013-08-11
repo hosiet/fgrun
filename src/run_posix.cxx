@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-// $Id: run_posix.cxx 542 2010-08-01 18:05:08Z fredb $
+// $Id$
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -126,6 +126,7 @@ Wizard::run_fgfs( const std::string &args )
 		       buf, "", buflen-1 );
 	    char* s = strdup( buf );
 	    putenv( s );
+            free( s );
 	}
 	vector<string> argv;
 	argv.push_back( arg0 );

@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-// $Id: fgrun_pty.h 156 2003-10-21 00:10:42Z bbright $
+// $Id$
 
 #ifndef FGRUN_PTY_H
 #define FGRUN_PTY_H

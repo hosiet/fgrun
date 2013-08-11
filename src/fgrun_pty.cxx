@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-// $Id: fgrun_pty.cxx 329 2006-03-26 13:03:58Z fredb $
+// $Id$
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>

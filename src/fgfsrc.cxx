@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-// $Id: fgfsrc.cxx 631 2011-10-08 14:03:54Z fredb $
+// $Id$
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -92,7 +92,9 @@ Wizard::write_fgfsrc( Fl_Preferences &prefs, std::ostream& os, const char* pfx )
         os << pfx << "--fg-aircraft=" << buf;
 
     // General options.
-    if (prefs.get( "airport", buf, "", buflen-1 ) && buf[0] != 0)
+    if (prefs.get( "carrier", buf, "", buflen-1 ) && buf[0] != 0)
+        os << pfx << "--carrier=" << buf;
+    else if (prefs.get( "airport", buf, "", buflen-1 ) && buf[0] != 0)
         os << pfx << "--airport=" << buf;
 
     if (prefs.get( "runway", buf, "", buflen-1 ) &&
@@ -102,8 +104,6 @@ Wizard::write_fgfsrc( Fl_Preferences &prefs, std::ostream& os, const char* pfx )
     if (prefs.get( "aircraft", buf, "", buflen-1 ) && buf[0] != 0)
         os << pfx << "--aircraft=" << buf;
 
-    if (prefs.get( "carrier", buf, "", buflen-1 ) && buf[0] != 0)
-        os << pfx << "--carrier=" << buf;
     if (prefs.get( "parkpos", buf, "", buflen-1 ) && buf[0] != 0)
         os << pfx << "--parkpos=" << buf;
 
@@ -178,6 +178,12 @@ Wizard::write_fgfsrc( Fl_Preferences &prefs, std::ostream& os, const char* pfx )
         os << pfx << "--enable-ai-models";
     else
         os << pfx << "--disable-ai-models";
+
+    prefs.get( "ai_traffic", iVal, 0 );
+    if (iVal)
+        os << pfx << "--enable-ai-traffic";
+    else
+        os << pfx << "--disable-ai-traffic";
 
     // Flight model
     prefs.get( "fdm", buf, "", buflen-1 );

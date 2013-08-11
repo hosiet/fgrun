@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-// $Id: wizard_funcs.cxx 630 2011-10-04 06:38:11Z fredb $
+// $Id$
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
@@ -27,6 +27,7 @@
 #include <string>
 #include <cstdio>
 #include <vector>
+#include <deque>
 #include <set>
 #include <map>
 #include <sstream>
@@ -68,6 +69,7 @@
 
 using std::string;
 using std::vector;
+using std::deque;
 using std::set;
 using std::map;
 
@@ -75,12 +77,16 @@ extern string def_fg_exe;
 extern string def_fg_root;
 extern string def_fg_scenery;
 extern string def_ts_exe;
+extern int def_ts_dir;
 
 Fl_Menu_Item Wizard::menu_time_of_day_value[] = {
- {N_("noon"), 0,  0, (void*)"noon", 0, FL_NORMAL_LABEL, 0, 14, 0},
- {N_("dusk"), 0,  0, (void*)"dusk", 0, FL_NORMAL_LABEL, 0, 14, 0},
- {N_("midnight"), 0,  0, (void*)"midnight", 0, FL_NORMAL_LABEL, 0, 14, 0},
  {N_("dawn"), 0,  0, (void*)"dawn", 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {N_("morning"), 0,  0, (void*)"morning", 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {N_("noon"), 0,  0, (void*)"noon", 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {N_("afternoon"), 0,  0, (void*)"afternoon", 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {N_("dusk"), 0,  0, (void*)"dusk", 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {N_("evening"), 0,  0, (void*)"evening", 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {N_("midnight"), 0,  0, (void*)"midnight", 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0}
 };
 
@@ -115,14 +121,40 @@ static const char *aircraft_status_[] = {
 struct AircraftData
 {
     string name;
+    string dir;
     string root;
     string desc;
     string status;
     string author;
     string modelPath;
+    string thumbnailPath;
+    int fdm;
+    int systems;
+    int cockpit;
+    int model;
 };
 
 static int widths[] = { 465, 30, 0 };
+
+static bool
+is_valid_fg_exe( string exe )
+{
+    if (exe.size() == 0)
+        return false;
+
+    SGPath path( exe );
+    while (exe.size() != 0 && ( !path.exists() || path.isDir() ))
+    {
+        size_t pos = exe.rfind(' ');
+        if (pos == std::string::npos)
+            return false;
+        else
+            exe.erase( pos );
+        path = SGPath( exe );
+    }
+
+    return true;
+}
 
 static bool
 is_valid_fg_root( const string& dir )
@@ -198,8 +230,8 @@ static const char* about_text = N_("\
  </head>\
  <body>\
   <h1>FlightGear Launch Control %s</h1>\
-  <p>This program is released under the GNU General Public License (http://www.gnu.org/copyleft/gpl.html).</p>\
-  <p>Report bugs to http://sourceforge.net/projects/fgrun</p>\
+  <p>This program is released under the GNU General Public License (<a href=\"http://www.gnu.org/copyleft/gpl.html\">http://www.gnu.org/copyleft/gpl.html</a>).</p>\
+  <p>Report bugs to <a href=\"http://sourceforge.net/projects/fgrun\">http://sourceforge.net/projects/fgrun</a></p>\
  </body>\
 </html>");
 
@@ -209,10 +241,32 @@ Wizard::reset()
     const int buflen = FL_PATH_MAX;
     char buf[ buflen ];
 
-    prefs.get( "fg_exe", buf, def_fg_exe.c_str(), buflen-1);
+    bool reloadPath = false;
+    int version, systemVersion;
+    prefs.get("version", version, 0);
+    systemPrefs.get("version", systemVersion, 0);
+    if (systemVersion != 0 && version < systemVersion)
+    {
+        prefs.set("version", systemVersion);
+        reloadPath = true;
+    }
+
+    if (reloadPath || !prefs.get( "fg_exe", buf, def_fg_exe.c_str(), buflen-1))
+    {
+        systemPrefs.get( "fg_exe_init", buf, def_fg_exe.c_str(), buflen-1);
+        prefs.set("fg_exe_init", buf);
+        systemPrefs.get( "fg_exe", buf, def_fg_exe.c_str(), buflen-1);
+        prefs.set("fg_exe", buf);
+    }
     fg_exe_->value( buf );
 
-    prefs.get( "fg_root", buf, def_fg_root.c_str(), buflen-1);
+    if (reloadPath || !prefs.get( "fg_root", buf, def_fg_root.c_str(), buflen-1))
+    {
+        systemPrefs.get( "fg_root_init", buf, def_fg_exe.c_str(), buflen-1);
+        prefs.set("fg_root_init", buf);
+        systemPrefs.get( "fg_root", buf, def_fg_exe.c_str(), buflen-1);
+        prefs.set("fg_root", buf);
+    }
     fg_root_->value( buf );
     SGPath fgPath(buf);
     if ( fg_root_->size() == 0 )
@@ -241,13 +295,20 @@ Wizard::reset()
         aircraft_dir_list_->add( va[i].c_str() );
 
     string fg_scenery;
-    if (!def_fg_scenery.empty())
-    {
-        fg_scenery = def_fg_scenery;
-    }
-    else if (prefs.get( "fg_scenery", buf, "", buflen-1))
+    if (!reloadPath && prefs.get( "fg_scenery", buf, "", buflen-1))
     {
         fg_scenery = buf;
+    }
+    else if (reloadPath && systemPrefs.get( "fg_scenery", buf, "", buflen-1))
+    {
+        fg_scenery = buf;
+        prefs.set("fg_scenery", buf);
+        systemPrefs.get( "fg_scenery_init", buf, def_fg_exe.c_str(), buflen-1);
+        prefs.set("fg_scenery_init", buf);
+    }
+    else if (!def_fg_scenery.empty())
+    {
+        fg_scenery = def_fg_scenery;
     }
     else if (fg_root_->size() > 0)
     {
@@ -267,7 +328,21 @@ Wizard::reset()
     scenery_dir_list_->clear();
     vs_t vs( sgPathSplit( fg_scenery ) );
 
-    prefs.get("ts_dir", ts_dir, 0);
+    int iVal;
+    if (!reloadPath && prefs.get("ts_dir", iVal, 0))
+    {
+        ts_dir = iVal;
+    }
+    else if (reloadPath && systemPrefs.get("ts_dir", iVal, 0))
+    {
+        prefs.set("ts_dir", ts_dir);
+        systemPrefs.get("ts_dir_init", iVal, 0);
+        prefs.set("ts_dir_init", iVal);
+    }
+    else
+    {
+        ts_dir = def_ts_dir;
+    }
 
     for (vs_t::size_type i = 0; i < vs.size(); ++i)
     {
@@ -277,12 +352,38 @@ Wizard::reset()
             scenery_dir_list_->add( vs[i].c_str() );
     }
 
-    prefs.get( "ts_exe", buf, def_ts_exe.c_str(), buflen-1);
-    ts_exe_->value( buf );
+    if (!reloadPath && prefs.get( "ts_exe", buf, "", buflen-1))
+    {
+        ts_exe_->value(buf);
+    }
+    else if (reloadPath && systemPrefs.get( "ts_exe", buf, "", buflen-1))
+    {
+        ts_exe_->value( buf );
+        prefs.set("ts_exe", buf);
+        systemPrefs.get("ts_exe_init", buf, "", buflen-1);
+        prefs.set("ts_exe_init", buf);
+    }
+    else
+    {
+        ts_exe_->value( def_ts_exe.c_str() );
+    }
 
-    if (fg_exe_->size() == 0 ||
-        fg_root_->size() == 0 ||
-        !is_valid_fg_root( fg_root_->value() ) ||
+    bool fg_exe_ok = fg_exe_->size() != 0 && is_valid_fg_exe( fg_exe_->value() ),
+         fg_root_ok = fg_root_->size() != 0 && is_valid_fg_root( fg_root_->value() );
+    if ( !fg_exe_ok )
+    {
+        fg_exe_invalid->show();
+    }
+    if ( !fg_root_ok )
+    {
+        fg_root_invalid->show();
+    }
+    if (fg_scenery.empty())
+    {
+        fg_scenery_invalid->show();
+    }
+    if (!fg_exe_ok ||
+        !fg_root_ok ||
         fg_scenery.empty() )
     {
         // First time through or FG_ROOT is not valid.
@@ -295,21 +396,26 @@ Wizard::reset()
     {
         airports_->set_refresh_callback( refresh_airports, this );
         refresh_airports();
+        aircraft_mru_update();
         aircraft_update();
 
+        fg_exe_invalid->hide();
+        fg_root_invalid->hide();
         prev->activate();
         next->activate();
         page[1]->show();
     }
     next->label( _("Next") );
 
-    int iVal;
     prefs.get("show_cmd_line", iVal, 0);
     show_cmd_line->value(iVal);
     if ( iVal )
         text->show();
     else
         text->hide();
+
+    prefs.get("show_3d_preview", iVal, 1);
+    show_3d_preview->value(iVal);
 }
 
 void
@@ -400,7 +506,6 @@ static const double update_period = 0.05;
 static void
 timeout_handler( void* v )
 {
-    ((Wizard*)v)->update_preview();
     Fl::redraw();
     Fl::repeat_timeout( update_period, timeout_handler, v );
 }
@@ -435,7 +540,7 @@ find_named_node( osg::Node * node, const string &name )
 }
 
 osg::Node *
-loadModel( const string &fg_root, const string &fg_aircraft, const string &current,
+loadModel( const string &fg_root, const string &fg_aircraft, const string &dir, const string &current,
                 const string &path, const SGPath& externalTexturePath )
 {
     osg::ref_ptr<osg::Node> model;
@@ -450,6 +555,12 @@ loadModel( const string &fg_root, const string &fg_aircraft, const string &curre
         if (!tmp.exists())
         {
             tmp = fg_aircraft;
+            tmp.append(modelpath.str());
+        }
+        if (!tmp.exists())
+        {
+            tmp = fg_aircraft;
+            tmp.append(dir);
             tmp.append(modelpath.str());
         }
         if (!tmp.exists() && modelpath.str().find( "Aircraft/" ) == 0)
@@ -553,7 +664,7 @@ loadModel( const string &fg_root, const string &fg_aircraft, const string &curre
 
         osg::ref_ptr<osg::Node> kid;
         try {
-            kid = loadModel( fg_root, fg_aircraft, modelpath.dir(), submodel, externalTexturePath );
+            kid = loadModel( fg_root, fg_aircraft, dir, modelpath.dir(), submodel, externalTexturePath );
         } catch (const sg_throwable &t) {
             SG_LOG(SG_INPUT, SG_ALERT, "Failed to load submodel: " << t.getFormattedMessage());
             throw;
@@ -601,12 +712,13 @@ loadModel( const string &fg_root, const string &fg_aircraft, const string &curre
 }
 
 void
-Wizard::preview_aircraft()
+Wizard::preview_aircraft(bool desel_mru)
 {
     Fl::remove_timeout( timeout_handler, this );
 
     current_aircraft_model_path = "";
 
+    preview->set_fg_root(fg_root_->value());
     preview->make_current();
 
     preview->clear();
@@ -619,6 +731,9 @@ Wizard::preview_aircraft()
     AircraftData* data =
         reinterpret_cast<AircraftData*>( aircraft->data(n) );
     prefs.set( "aircraft", n > 0 ? data->name.c_str() : "" );
+    prefs.set( "aircraft_name", n > 0 ? data->desc.c_str() : "" );
+    if (desel_mru)
+        aircraft_mru->deselect();
 
     if (!data->modelPath.empty())
     {
@@ -629,7 +744,13 @@ Wizard::preview_aircraft()
         if (!path.exists())
         {
             error = true;
-            if ( data->modelPath.find( "Aircraft/" ) == 0 )
+            path = data->root;
+            path.append( data->dir );
+            path.append( data->modelPath );
+
+            if ( path.exists() )
+                error = false;
+            else if ( data->modelPath.find( "Aircraft/" ) == 0 )
             {
                 path = data->root;
                 path.append( data->modelPath.substr( 9 ) );
@@ -648,14 +769,22 @@ Wizard::preview_aircraft()
             win->cursor( FL_CURSOR_WAIT );
             Fl::flush();
 
-            osg::ref_ptr<osg::Node> model = loadModel( fg_root_->value(), data->root, "", path.str(), SGPath() );
-            if (model != 0)
+            if (show_3d_preview->value())
             {
-                current_aircraft_model_path = path.str();
-                osg::ref_ptr<osg::Node> bounding_obj = find_named_node( model.get(), "Aircraft" );
-                preview->set_model( model.get(), bounding_obj.get() );
+                osg::ref_ptr<osg::Node> model = loadModel( fg_root_->value(), data->root, data->dir, "", path.str(), SGPath() );
+                if (model != 0)
+                {
+                    current_aircraft_model_path = path.str();
+                    //osg::ref_ptr<osg::Node> bounding_obj = find_named_node( model.get(), "Aircraft" );
+                    preview->set_model( model.get(), data->fdm, data->systems, data->cockpit, data->model );
 
-                Fl::add_timeout( update_period, timeout_handler, this );
+                    Fl::add_timeout( update_period, timeout_handler, this );
+                }
+            }
+            else
+            {
+                string thumbnail = data->thumbnailPath;
+                preview->set_thumbnail(thumbnail.c_str(), data->fdm, data->systems, data->cockpit, data->model );
             }
             win->cursor( FL_CURSOR_DEFAULT );
             preview->redraw();
@@ -677,6 +806,7 @@ Wizard::preview_aircraft()
 
     aircraft_status->value( _( data->status.c_str() ) );
     aircraft_author->value( data->author.c_str() );
+    aircraft_location->value( data->root.c_str() );
 
     next->activate();
 }
@@ -704,8 +834,9 @@ Wizard::next_cb()
             prefs.set( "fg_root", abs_name );
              win->cursor( FL_CURSOR_WAIT );
             Fl::flush();
+            aircraft_mru_update();
             aircraft_update();
-             win->cursor( FL_CURSOR_DEFAULT );
+            win->cursor( FL_CURSOR_DEFAULT );
         }
 
         string fg_aircraft;
@@ -738,6 +869,9 @@ Wizard::next_cb()
             fl_filename_absolute( abs_name, ts_exe_->value() );
             prefs.set( "ts_exe", abs_name );
         }
+
+        if (refreshAircraft)
+            aircraft_update();
 
         refresh_airports();
     }
@@ -773,6 +907,8 @@ Wizard::next_cb()
     }
     else if (wiz->value() == page[3])
     {
+        update_aircraft_mru();
+
         if (terrasync->value())
         {
             if (tsThread == 0)
@@ -794,6 +930,8 @@ Wizard::next_cb()
 
     if (wiz->value() == page[1])
     {
+        aircraft_mru_update();
+
         // "Select aircraft" page
         if (aircraft->size() == 0)
             aircraft_update();
@@ -831,6 +969,10 @@ Wizard::prev_cb()
 {
     next->activate();
     next->label( _("Next") );
+    if (wiz->value() == page[2])
+    {
+        aircraft_mru_update();
+    }
     wiz->prev();
     if (wiz->value() == page[0])
     {
@@ -870,47 +1012,71 @@ Wizard::fg_exe_select_cb()
 void
 Wizard::fg_exe_update_cb()
 {
-//     if (fg_exe_->size() == 0)
-//         return;
+    fg_path_updated();
 }
 
 void
 Wizard::fg_root_update_cb()
 {
+    fg_path_updated();
+}
+
+void
+Wizard::fg_path_updated(bool addScenery)
+{
     next->deactivate();
 
-    if (fg_root_->size() == 0)
-        return;
+    bool error = false;
 
+    fg_exe_invalid->show();
+    if (fg_exe_->size() == 0 || !is_valid_fg_exe(fg_exe_->value()))
+        error = true;
+    else
+        fg_exe_invalid->hide();
+
+    fg_root_invalid->show();
     string dir( fg_root_->value() );
 
-    // Remove trailing separator.
-    if (os::isdirsep( dir[ dir.length() - 1 ] ))
+    if (fg_root_->size() == 0)
+        error = true;
+    else
     {
-        dir.erase( dir.length() - 1 );
-    }
+        // Remove trailing separator.
+        if (os::isdirsep( dir[ dir.length() - 1 ] ))
+            dir.erase( dir.length() - 1 );
 
-    if (!is_valid_fg_root( dir ))
-    {
-        dir.append( "/data" );
         if (!is_valid_fg_root( dir ))
-            return;
+        {
+            dir.append( "/data" );
+            if (!is_valid_fg_root( dir ))
+                error = true;
+            else
+            {
+                fg_root_->value( dir.c_str() );
+                fg_root_invalid->hide();
+            }
+        }
+        else
+            fg_root_invalid->hide();
     }
 
-    fg_root_->value( dir.c_str() );
-
-    if (scenery_dir_list_->size() == 0)
+    if (addScenery && scenery_dir_list_->size() == 0)
     {
         // Derive FG_SCENERY from FG_ROOT. 
         string d( dir );
         d.append( "/Scenery" );
-        if (!fl_filename_isdir( d.c_str() ))
-            return;
-
-        scenery_dir_list_->add( d.c_str() );
+        if (fl_filename_isdir( d.c_str() ))
+            scenery_dir_list_->add( d.c_str() );
     }
 
-    next->activate();
+    fg_scenery_invalid->show();
+    if (scenery_dir_list_->size() == 0)
+        error = true;
+    else
+        fg_scenery_invalid->hide();
+
+    if (!error)
+        next->activate();
 }
 
 void
@@ -919,7 +1085,12 @@ Wizard::fg_root_select_cb()
     char* p = fl_dir_chooser( _("Select FG_ROOT directory"),
                               fg_root_->value(), 0);
     if (p != 0)
+    {
+        // Remove trailing separator.
+        if (*p != 0 && os::isdirsep( p[strlen(p)-1] ))
+            p[strlen(p)-1] = '\0';
         fg_root_->value( p );
+    }
 
     fg_root_update_cb();
 }
@@ -945,12 +1116,6 @@ Wizard::advanced_cb()
     ostr << fg_exe_->value() << "\n  ";
     write_fgfsrc( prefs, ostr, "\n  " );
     text->buffer()->text( ostr.str().c_str() );
-}
-
-void
-Wizard::update_preview()
-{
-    preview->update();
 }
 
 static void
@@ -1077,13 +1242,17 @@ Wizard::aircraft_update( const char *aft )
 
                     AircraftData* data = new AircraftData;
                     data->name = ss;
+                    data->dir = name;
                     data->root = path.str();
                     data->desc = desc;
-                    data->status = props.getStringValue( "/sim/status" );
-                    data->modelPath = props.getStringValue( "/sim/model/path" );
-                    if ( data->status.empty() ) data->status = _( "Unknown" );
-                    data->author = props.getStringValue( "/sim/author" );
-                    if ( data->author.empty() ) data->author = _( "Unknown" );
+                    data->status = props.getStringValue( "/sim/status", _( "Unknown" ) );
+                    data->modelPath = props.getStringValue( "/sim/model/path", _( "Unknown" ) );
+                    data->thumbnailPath = SGPath(s).dir() + "/thumbnail.jpg";
+                    data->author = props.getStringValue( "/sim/author", _( "Unknown" ) );
+                    data->fdm = props.getIntValue( "/sim/rating/FDM", -1 );
+                    data->systems = props.getIntValue( "/sim/rating/systems", -1 );
+                    data->cockpit = props.getIntValue( "/sim/rating/cockpit", -1 );
+                    data->model = props.getIntValue( "/sim/rating/model", -1 );
                     am[name].push_back( data );
                 }
             }
@@ -1108,6 +1277,8 @@ Wizard::aircraft_update( const char *aft )
             }
         }
     }
+
+    refreshAircraft = false;
 
     if ( selected )
         Fl::add_timeout( 0.1, delayed_preview, this );
@@ -1190,10 +1361,15 @@ Wizard::aircraft_dir_add_cb()
     char* p = fl_dir_chooser( _("Select FG_AIRCRAFT directory"), 0, 0);
     if (p != 0)
     {
+        // Remove trailing separator.
+        if (*p != 0 && os::isdirsep( p[strlen(p)-1] ))
+            p[strlen(p)-1] = '\0';
         aircraft_dir_list_->add( p );
         aircraft_dir_list_->value( aircraft_dir_list_->size() );
         aircraft_dir_list_->select( aircraft_dir_list_->size() );
         aircraft_dir_delete_->activate();
+
+        refreshAircraft = true;
     }
 }
 
@@ -1208,6 +1384,8 @@ Wizard::aircraft_dir_delete_cb()
 
     if (aircraft_dir_list_->value() == 0)
         aircraft_dir_delete_->deactivate();
+
+    refreshAircraft = true;
 }
 
 void
@@ -1257,10 +1435,15 @@ Wizard::scenery_dir_add_cb()
     char* p = fl_dir_chooser( _("Select FG_SCENERY directory"), 0, 0);
     if (p != 0)
     {
+        // Remove trailing separator.
+        if (*p != 0 && os::isdirsep( p[strlen(p)-1] ))
+            p[strlen(p)-1] = '\0';
         scenery_dir_list_->add( p );
         scenery_dir_list_->value( scenery_dir_list_->size() );
         scenery_dir_list_->select( scenery_dir_list_->size() );
         update_scenery_up_down();
+
+        fg_path_updated();
     }
 }
 
@@ -1281,6 +1464,8 @@ Wizard::scenery_dir_delete_cb()
         scenery_dir_delete_->deactivate();
 
     update_scenery_up_down();
+
+    fg_path_updated( false );
 }
 
 /**
@@ -1491,11 +1676,24 @@ Wizard::ai_models_cb()
     prefs.set("ai_models", ai_models->value());
     if ( ai_models->value() == 0 )
     {
+        ai_traffic->value(0);
+        prefs.set("ai_traffic", ai_traffic->value());
+        ai_traffic->deactivate();
         multiplay->value(0);
         multiplay_cb();
     }
     else
+    {
+        ai_traffic->activate();
         update_options();
+    }
+}
+
+void
+Wizard::ai_traffic_cb()
+{
+    prefs.set("ai_traffic", ai_traffic->value());
+    update_options();
 }
 
 void
@@ -1568,7 +1766,7 @@ Wizard::scenarii_cb()
             tooltip = _("Description of ");
             tooltip += scenarii->text( scenarii->value() );
             tooltip += "\n";
-            tooltip += scenario.getStringValue( "scenario/description" );
+            tooltip += scenario.getStringValue( "scenario/description", _("Not set") );
 
             size_t p = 0;
             while ( ( p = tooltip.find( '@', p ) ) != string::npos )
@@ -1579,13 +1777,13 @@ Wizard::scenarii_cb()
         }
         catch ( const sg_exception& )
         {
-            tooltip = "";
+            tooltip = _("Select a scenario to display its description");
         }
     }
     else
-        tooltip = "";
+        tooltip = _("Select a scenario to display its description");
 
-    scenarii->tooltip( tooltip.c_str() );
+    scenarii_help->tooltip( tooltip.c_str() );
 
     int nb = 0;
     for (int i = 1; i <= scenarii->size(); ++i)
@@ -1808,9 +2006,7 @@ Wizard::multiplay_cb()
         str << "out,10," << host << "," << out;
         prefs.set("multiplay1",str.str().c_str());
         str.str("");
-        char hostname[256];
-        gethostname( hostname, 256 );
-        str << "in,10," << hostname << "," << in;
+        str << "in,10,," << in;
         prefs.set("multiplay2",str.str().c_str());
 
         ai_models->value(1);
@@ -1832,9 +2028,7 @@ Wizard::multiplay_field_cb()
     str << "out,10," << host << "," << out;
     prefs.set("multiplay1",str.str().c_str());
     str.str("");
-    char hostname[256];
-    gethostname( hostname, 256 );
-    str << "in,10," << hostname << "," << in;
+    str << "in,10,," << in;
     prefs.set("multiplay2",str.str().c_str());
     update_options();
 }
@@ -1915,6 +2109,12 @@ Wizard::update_basic_options( Fl_Preferences &p )
     random_trees->value(iVal);
     p.get("ai_models", iVal, 0);
     ai_models->value(iVal);
+    p.get("ai_traffic", iVal, 0);
+    ai_traffic->value(iVal);
+    if (ai_models->value() == 0)
+        ai_traffic->deactivate();
+    else
+        ai_traffic->activate();
     p.get("time_of_day", iVal, 0);
     time_of_day->value(iVal);
     p.get("time_of_day_value", buf, "noon", buflen-1);
@@ -2087,12 +2287,16 @@ Wizard::display_scenarii()
             i += 1;
         }
     }
+
+    scenarii_cb();
 }
 
 void
 Wizard::deselect_all_scenarii_cb()
 {
     scenarii->deselect();
+    scenarii_help->tooltip( _("Select a scenario to display its description") );
+
     prefs.set("scenario-count", 0);
     update_options();
 }
@@ -2185,35 +2389,29 @@ Wizard::reset_settings()
 
     const int buflen = FL_PATH_MAX;
     char buf[ buflen ];
-    const char* not_set = "NOT SET";
 
-    prefs.get( "fg_exe_init", buf, not_set, buflen-1);
-    if ( strcmp( buf, not_set ) != 0 )
+    if ( prefs.get( "fg_exe_init", buf, "", buflen-1) != 0 )
     {
         prefs.set( "fg_exe", buf );
     }
 
-    prefs.get( "fg_root_init", buf, not_set, buflen-1);
-    if ( strcmp( buf, not_set ) != 0 )
+    if ( prefs.get( "fg_root_init", buf, "", buflen-1) != 0 )
     {
         prefs.set( "fg_root", buf );
     }
 
-    prefs.get( "fg_scenery_init", buf, not_set, buflen-1 );
-    if ( strcmp( buf, not_set ) != 0 )
+    if ( prefs.get( "fg_scenery_init", buf, "", buflen-1 ) != 0 )
     {
         prefs.set( "fg_scenery", buf );
     }
 
-    prefs.get( "ts_exe_init", buf, not_set, buflen-1);
-    if ( strcmp( buf, not_set ) != 0 )
+    if ( prefs.get( "ts_exe_init", buf, "", buflen-1) != 0 )
     {
         prefs.set( "ts_exe", buf );
     }
 
     int iVal = -1;
-    prefs.get( "ts_dir_init", iVal, -1);
-    if ( iVal != -1 )
+    if ( prefs.get( "ts_dir_init", iVal, -1) != 0 )
     {
         ts_dir = iVal;
         prefs.set( "ts_dir", ts_dir );
@@ -2393,9 +2591,7 @@ Wizard::save_basic_options( Fl_Preferences &p )
         str << "out,10," << host << "," << out;
         p.set("multiplay1",str.str().c_str());
         str.str("");
-        char hostname[256];
-        gethostname( hostname, 256 );
-        str << "in,10," << hostname << "," << in;
+        str << "in,10,," << in;
         p.set("multiplay2",str.str().c_str());
     }
 
@@ -2647,4 +2843,103 @@ Wizard::auto_visibility_cb()
 {
     prefs.set("autovisibility", auto_visibility->value());
     update_options();
+}
+
+void
+Wizard::show_3d_preview_cb()
+{
+    prefs.set("show_3d_preview", show_3d_preview->value());
+    preview_aircraft(false);
+}
+
+void
+Wizard::aircraft_mru_update()
+{
+    aircraft_mru->clear();
+
+    const int buflen = FL_PATH_MAX;
+    char buf[ buflen ];
+    int nb = 0;
+    prefs.get("aircraft-mru-count", nb, 0);
+    for (int i = 1; i <= nb; ++i)
+    {
+        if (prefs.get( Fl_Preferences::Name("aircraft-mru-item-%d", i), buf, "", buflen-1))
+        {
+            string name(buf);
+            size_t p = name.find(';');
+            if (p != string::npos)
+                name.erase(0, p+1);
+            aircraft_mru->add(name.c_str());
+        }
+    }
+}
+
+void
+Wizard::update_aircraft_mru()
+{
+    const int buflen = FL_PATH_MAX;
+    char buf[ buflen ];
+    char buf1[ buflen ];
+    int pos = 0;
+    if (prefs.get( "aircraft", buf, "", buflen-1 ) && buf[0] != 0 &&
+        prefs.get( "aircraft_name", buf1, "", buflen-1 ) && buf1[0] != 0)
+    {
+        deque<string> aircraft_mru;
+
+        int nb = 0;
+        prefs.get("aircraft-mru-count", nb, 0);
+        for (int i = 1; i <= nb; ++i)
+        {
+            char buf2[ buflen ];
+            if (prefs.get( Fl_Preferences::Name("aircraft-mru-item-%d", i), buf2, "", buflen))
+            {
+                aircraft_mru.push_back(buf2);
+                if (aircraft_mru.back().find(buf) == 0 && aircraft_mru.back().size() > strlen(buf) && aircraft_mru.back()[strlen(buf)] == ';')
+                    pos = i;
+            }
+        }
+        if (pos != 0)
+        {
+            aircraft_mru.erase(aircraft_mru.begin() + (pos - 1));
+        }
+        aircraft_mru.push_front(string(buf)+";"+buf1);
+        while (aircraft_mru.size() > 5)
+            aircraft_mru.pop_back();
+
+        for (int i = 1; i <= aircraft_mru.size(); ++i)
+        {
+            prefs.set( Fl_Preferences::Name("aircraft-mru-item-%d", i), aircraft_mru[i-1].c_str());
+        }
+        prefs.set("aircraft-mru-count", (int)aircraft_mru.size());
+    }
+}
+
+void
+Wizard::aircraft_from_mru()
+{
+    int n = aircraft_mru->value();
+    if (n == 0)
+        return;
+
+    const int buflen = FL_PATH_MAX;
+    char buf[ buflen ];
+    if (prefs.get( Fl_Preferences::Name("aircraft-mru-item-%d", n), buf, "", buflen))
+    {
+        string name(buf);
+        size_t p = name.find(';');
+        if (p != string::npos)
+            name.erase(0, p+1);
+
+        string search = string("    ") + name;
+        for (int i=1; i <= aircraft->size(); ++i)
+        {
+            string line = aircraft->text(i);
+            if (line == search)
+            {
+                aircraft->value(i);
+                preview_aircraft(false);
+                return;
+            }
+        }
+    }
 }

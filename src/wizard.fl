@@ -33,6 +33,12 @@ decl {\#include <OpenThreads/Thread>} {public local
 decl {\#include "folder_open.xpm"} {private local
 } 
 
+decl {\#include "warning.xpm"} {private local
+} 
+
+decl {\#include "question.xpm"} {private local
+} 
+
 decl {class LogWindow;} {public local
 } 
 
@@ -78,11 +84,11 @@ class Wizard {open
     decl {TerraSyncThread &operator=( const TerraSyncThread & );} {private local
     }
   }
-  Function {Wizard() : prefs( Fl_Preferences::USER, "flightgear.org", "fgrun" ), logwin(0), folder_open_pixmap(folder_open_xpm), adv(0), fgThread(0), tsThread(0), fgPid(0), tsPid(0)} {open
+  Function {Wizard() : prefs( Fl_Preferences::USER, "flightgear.org", "fgrun" ), systemPrefs( Fl_Preferences::SYSTEM, "flightgear.org", "fgrun" ),logwin(0), folder_open_pixmap(folder_open_xpm), warning_pixmap(warning_xpm), question_pixmap(question_xpm), adv(0), fgThread(0), tsThread(0), fgPid(0), tsPid(0), refreshAircraft(false)} {open
   } {
     Fl_Window win {
       label {FlightGear Wizard} open
-      private xywh {579 307 800 600} type Double visible
+      private xywh {694 241 800 600} type Double visible
     } {
       Fl_Wizard wiz {open
         private xywh {0 0 800 560}
@@ -98,12 +104,16 @@ class Wizard {open
           Fl_Input fg_exe_ {
             label {Executable:}
             callback {fg_exe_update_cb();}
-            private tooltip {Full pathname to FlightGear executable} xywh {130 175 495 25} labelsize 12 when 8 textsize 12
+            private tooltip {Full pathname to FlightGear executable} xywh {130 175 495 25} labelsize 12 when 1 textsize 12
           }
           Fl_Button {} {
             callback {fg_exe_select_cb();}
             private tooltip {Full pathname to FlightGear executable} xywh {630 175 25 25} labelsize 12
             code0 {o->image(folder_open_pixmap);}
+          }
+          Fl_Box fg_exe_invalid {
+            tooltip {Executable path not set or invalid} xywh {660 175 25 25} hide
+            code0 {o->image(warning_pixmap);}
           }
           Fl_Input fg_root_ {
             label {FG_ROOT:}
@@ -114,6 +124,10 @@ class Wizard {open
             callback {fg_root_select_cb();}
             private tooltip {root data path} xywh {630 205 25 25} labelsize 12
             code0 {o->image(folder_open_pixmap);}
+          }
+          Fl_Box fg_root_invalid {
+            tooltip {FG_ROOT path invalid or not set} xywh {660 205 25 25} hide
+            code0 {o->image(warning_pixmap);}
           }
           Fl_Group {} {open
             xywh {130 235 495 225} resizable
@@ -176,7 +190,7 @@ class Wizard {open
               }
             }
           }
-          Fl_Group {} {
+          Fl_Group {} {open
             xywh {630 350 25 40}
           } {
             Fl_Button scenery_dir_up_ {
@@ -188,7 +202,7 @@ class Wizard {open
               xywh {630 350 25 15} resizable
             }
           }
-          Fl_Group {} {
+          Fl_Group {} {open
             xywh {630 390 25 40}
           } {
             Fl_Button scenery_dir_down_ {
@@ -199,6 +213,10 @@ class Wizard {open
             Fl_Box {} {
               xywh {630 420 25 10} resizable
             }
+          }
+          Fl_Box fg_scenery_invalid {
+            tooltip {FG_SCENERY empty} xywh {660 350 25 25} hide
+            code0 {o->image(warning_pixmap);}
           }
           Fl_Button cache_delete_ {
             label Delete
@@ -221,46 +239,65 @@ class Wizard {open
           }
         }
         Fl_Group {page[1]} {
-          label {Select an aircraft}
-          private xywh {0 0 800 560} labelfont 1 align 21 hide
+          label {Select an aircraft} open
+          private xywh {0 0 800 560} labelfont 1 align 21
         } {
-          Fl_Tile {} {
-            xywh {0 20 795 500} resizable
+          Fl_Check_Button show_3d_preview {
+            label {3D Preview}
+            callback {show_3d_preview_cb()}
+            private xywh {780 0 17 25} down_box DOWN_BOX labelsize 12 align 4
+          }
+          Fl_Tile {} {open
+            private xywh {0 25 795 465} resizable
           } {
-            Fl_Browser aircraft {
-              callback {preview_aircraft();}
-              private xywh {5 20 200 500} type Hold labelsize 12 align 1 textsize 12
+            Fl_Group {} {open
+              private xywh {5 25 200 465}
+            } {
+              Fl_Browser aircraft_mru {
+                label {Recently used aircraft :}
+                callback {aircraft_from_mru();} selected
+                private xywh {5 35 200 105} type Hold labelfont 1 labelsize 12 align 5 textsize 12
+              }
+              Fl_Browser aircraft {
+                label {Available aircraft :}
+                callback {preview_aircraft();}
+                private xywh {5 160 200 330} type Hold labelfont 1 labelsize 12 align 5 textsize 12 resizable
+              }
             }
             Fl_Box preview {
               label Preview
-              private xywh {205 20 590 500} box THIN_DOWN_BOX labelsize 12
+              private xywh {205 25 590 465} box THIN_DOWN_BOX labelsize 12
               code0 {\#include "Fl_OSG.h"}
               class Fl_OSG
             }
             Fl_Box {} {
-              xywh {80 190 265 65} hide resizable
+              private xywh {80 190 265 65} hide resizable
             }
           }
           Fl_Group {} {open
-            xywh {5 520 790 35} box DOWN_BOX
+            private xywh {5 490 790 65} box DOWN_BOX
           } {
             Fl_Output aircraft_status {
               label {Status :}
-              xywh {115 525 135 25}
+              private xywh {115 495 135 25}
             }
             Fl_Output aircraft_author {
               label {Author(s) :}
-              xywh {385 525 305 25} resizable
+              private xywh {385 495 305 25} resizable
             }
             Fl_Button start_viewer {
               label Viewer
               callback {start_viewer_cb();}
-              xywh {695 525 95 25}
+              private xywh {695 495 95 25}
+            }
+            Fl_Output aircraft_location {
+              label {Location :}
+              private xywh {115 525 575 25}
             }
           }
         }
         Fl_Group {page[2]} {
-          label {Select a location}
+          label {Select a location} open
           private xywh {0 0 800 560} labelfont 1 align 21 hide
         } {
           Fl_Box airports_ {
@@ -268,34 +305,34 @@ class Wizard {open
             code0 {\#include "AirportBrowser.h"}
             class AirportBrowser
           }
-          Fl_Group {} {
-            xywh {5 505 790 50}
+          Fl_Group {} {open
+            private xywh {5 505 790 50}
           } {
             Fl_Group carrier_group {
               label {Carrier Ops} open
-              xywh {5 505 635 50} box ENGRAVED_FRAME labelfont 1 align 21 resizable
+              private xywh {5 505 635 50} box ENGRAVED_FRAME labelfont 1 align 21 resizable
             } {
               Fl_Input carrier_ {
                 label {Carrier : }
-                xywh {145 520 175 25}
+                private xywh {145 520 175 25}
               }
               Fl_Input parkpos_ {
                 label {Park pos :}
-                tooltip {Only valid if carrier is set. For airport parking, use the list above.} xywh {460 520 175 25}
+                private tooltip {Only valid if carrier is set. For airport parking, use the list above.} xywh {460 520 175 25}
               }
               Fl_Box {} {
-                xywh {640 505 0 5} resizable
+                private xywh {640 505 0 5} resizable
               }
             }
             Fl_Button {} {
               label {Scenery Prefetch}
               callback {scenery_prefetch_cb();}
-              xywh {645 505 150 50} labelsize 12
+              private xywh {645 505 150 50} labelsize 12
             }
           }
         }
         Fl_Group {page[3]} {open
-          private xywh {0 0 800 560}
+          private xywh {0 0 800 560} hide
         } {
           Fl_Group {} {
             private xywh {0 525 800 25}
@@ -395,7 +432,7 @@ class Wizard {open
             Fl_Choice bpp {
               label {bpp :}
               callback {bpp_cb();} open
-              tooltip {Color depth (bits per pixel)} xywh {100 55 125 25} down_box BORDER_BOX
+              private tooltip {Color depth (bits per pixel)} xywh {100 55 125 25} down_box BORDER_BOX
             } {
               MenuItem {} {
                 label 32
@@ -415,7 +452,7 @@ class Wizard {open
             xywh {5 120 790 180}
           } {
             Fl_Group {} {
-              label Features
+              label Features open
               private xywh {5 120 480 180} box ENGRAVED_FRAME labelfont 1 align 21
             } {
               Fl_Check_Button random_objects {
@@ -432,6 +469,11 @@ class Wizard {open
                 label {AI models}
                 callback {ai_models_cb();}
                 private xywh {25 185 150 25} down_box DOWN_BOX
+              }
+              Fl_Check_Button ai_traffic {
+                label {AI Traffic}
+                callback {ai_traffic_cb();}
+                private xywh {35 210 140 25} down_box DOWN_BOX
               }
               Fl_Check_Button time_of_day {
                 label {Time of day :}
@@ -463,7 +505,7 @@ class Wizard {open
               Fl_Check_Button auto_visibility {
                 label {Menu auto-visibility}
                 callback {auto_visibility_cb();}
-                xywh {180 235 170 25} down_box DOWN_BOX
+                private xywh {180 235 170 25} down_box DOWN_BOX
               }
             }
             Fl_Group {} {
@@ -472,12 +514,20 @@ class Wizard {open
             } {
               Fl_Browser scenarii {
                 callback {scenarii_cb();}
-                private xywh {495 136 295 88} type Multi align 5 resizable
+                private tooltip {Ctrl-click to select or deselect a single item} xywh {495 136 295 88} type Multi align 5 resizable
               }
-              Fl_Button {} {
-                label {Deselect all}
-                callback {deselect_all_scenarii_cb();}
+              Fl_Group {} {open
                 xywh {495 230 295 25}
+              } {
+                Fl_Button {} {
+                  label {Deselect all}
+                  callback {deselect_all_scenarii_cb();}
+                  tooltip {Ctrl-click to deselect a single item} xywh {495 230 265 25} resizable
+                }
+                Fl_Box scenarii_help {
+                  private xywh {765 230 25 25}
+                  code0 {o->image(question_pixmap);}
+                }
               }
             }
             Fl_Group {} {open
@@ -486,11 +536,11 @@ class Wizard {open
               Fl_Check_Button terrasync {
                 label TerraSync
                 callback {terrasync_cb();}
-                xywh {495 270 100 25} down_box DOWN_BOX labelfont 1
+                private xywh {495 270 100 25} down_box DOWN_BOX labelfont 1
               }
               Fl_Value_Input terrasync_port {
                 callback {terrasync_port_cb();}
-                xywh {595 270 50 25}
+                private xywh {595 270 50 25}
               }
               Fl_Box {} {
                 xywh {680 270 45 25} resizable
@@ -604,9 +654,7 @@ class Wizard {open
   }
   decl {void init( bool fullscreen );} {public local
   }
-  decl {void update_preview();} {public local
-  }
-  decl {void preview_aircraft();} {public local
+  decl {void preview_aircraft(bool desel_mru = true);} {public local
   }
   decl {void reset();} {private local
   }
@@ -629,6 +677,8 @@ class Wizard {open
   decl {void fg_root_update_cb();} {private local
   }
   decl {void fg_root_select_cb();} {private local
+  }
+  decl {void fg_path_updated(bool addScenery = true);} {private local
   }
   decl {void advanced_cb();} {private local
   }
@@ -684,9 +734,15 @@ class Wizard {open
   }
   decl {Fl_Preferences prefs;} {private local
   }
+  decl {Fl_Preferences systemPrefs;} {private local
+  }
   decl {LogWindow* logwin;} {private local
   }
-  decl {Fl_Pixmap folder_open_pixmap} {private local
+  decl {Fl_Pixmap folder_open_pixmap;} {private local
+  }
+  decl {Fl_Pixmap warning_pixmap;} {private local
+  }
+  decl {Fl_Pixmap question_pixmap;} {private local
   }
   decl {void update_options();} {private local
   }
@@ -714,6 +770,8 @@ class Wizard {open
   }
   decl {void ai_models_cb();} {private local
   }
+  decl {void ai_traffic_cb();} {private local
+  }
   decl {void time_of_day_cb();} {private local
   }
   decl {void time_of_day_value_cb();} {private local
@@ -740,7 +798,7 @@ class Wizard {open
   }
   decl {void multiplay_field_cb();} {private local
   }
-  decl {void multiplay_callsign_cb();} {selected private local
+  decl {void multiplay_callsign_cb();} {private local
   }
   decl {void update_basic_options( Fl_Preferences &p );} {private local
   }
@@ -751,6 +809,8 @@ class Wizard {open
   decl {void deselect_all_scenarii_cb();} {private local
   }
   decl {void show_cmd_line_cb();} {private local
+  }
+  decl {void show_3d_preview_cb();} {private local
   }
   decl {void reset_settings();} {private local
   }
@@ -792,11 +852,11 @@ class Wizard {open
   }
   decl {static Fl_Menu_Item menu_season[];} {private local
   }
-  Function {make_crash_window()} {open private
+  Function {make_crash_window()} {private
   } {
     Fl_Window crash_window {
       label {Flightgear crashed...} open
-      private xywh {826 351 455 240} type Double visible
+      private xywh {-32000 -32000 455 240} type Double hide
     } {
       Fl_Box {} {
         label {Flightgear encountered an unexpected failure}
@@ -848,7 +908,7 @@ class Wizard {open
   } {
     Fl_Window prefetch_window {
       label {Prefetch Scenery} open
-      xywh {668 245 350 130} type Double visible
+      xywh {-32000 -32000 350 130} type Double hide
     } {
       Fl_Group {} {open
         xywh {0 90 350 35}
@@ -890,5 +950,13 @@ class Wizard {open
   decl {string current_aircraft_model_path;} {private local
   }
   decl {int ts_dir;} {private local
+  }
+  decl {bool refreshAircraft;} {private local
+  }
+  decl {void update_aircraft_mru()} {private local
+  }
+  decl {void aircraft_mru_update();} {private local
+  }
+  decl {void aircraft_from_mru();} {private local
   }
 } 
