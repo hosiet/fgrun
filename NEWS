@@ -1,0 +1,148 @@
+* 1.6.0
+
+  * change to compile with old versions of OSG (needed to compile under freebsd)
+  * new --materials-file in advanced section
+  * fix white spaces in aircraft path
+  * add Cmake build system
+  * --fg-aircraft option support for fgfs and to display models in the aircraft browser
+  * remove cache usage for aircraft models to lower memory requirements
+  * make fgrun aware of the use-custom-scenery file layout for parking positions
+  * fix network options in the advanced section
+  * limit length of callsign to 8 and don't allow spaces
+  * change terrasync directory selection in the wizard
+  * enable disabled options in the advanced section
+  * fix resizing of multiplayer options
+  * remove plib dependency
+
+* 1.5.2
+
+  * compile under Win64
+  * add a field to configure a specific path for the terrasync executable ( which is only Win32 )
+  * --enable-ai-models is a prerequisite for --multiplay
+  * allow spaces in --props: options
+  * support XPlane 850 apt.dat format
+  * add a button to deselect all selected scenarii. This should be an hint that many scenarii are selectable at once
+  * add a prefetch button in the airport page to get scenery around a specific airport via terrasync before starting the simulator
+
+* 1.5.1
+
+  * start TerraSync automatically
+  * drop pthreads dependency
+  * set configured environment variables under Windows ( was already working under Unix )
+  * update tooltips
+  * update translations
+  * show all types of parking positions
+
+* 1.5.0
+
+  * use OpenSceneGraph to display aircrafts
+  * locale support
+  * es, pt, de, pl, nl, it & fr locale
+  * display aircraft status and author
+  * add --bpp option in the wizard
+  * add frame throtling control in the wizard
+  * vegetation control in the wizard
+  * choose season
+  * don't crash when restoring startup parameters
+  * save and load options
+  * support parking position for startup
+  * seabases and heliports available in airport browser
+  * explicit TerraSync option that not conflict with Atlas
+
+* 1.0.0
+
+  * Match the Flightgear version number
+  * Don't complain about unsupported file type, just ignore them
+  * Support of <nopreview/> tag in animations and submodels to improve aircraft preview
+  * Case unsensitive sort of aircraft in the preview list
+
+* 0.4.9
+
+  * Ordered aircraft list
+  * Changed --aircraft-id to --aircraft
+  * Fix --jpg-httpd option
+  * Fix problem with space in path
+  * Load aircraft submodels in the preview browser
+  * Support scenarios without having to modify preferences.xml
+  * Support the AV400 protocol
+  * Use plib to browse aircrafts
+  * Fix resizing bug
+  * Migrated to Sourceforge SVN
+
+* 0.4.8
+
+  * Compiles and runs under Cygwin
+  * --carrier and --parkpos options
+
+* 0.4.7
+
+  * New 'Defaults' button in the wizard to restore default settings
+  * Improve airport search
+
+* 0.4.6
+
+  * New wizard page with most common options directly available
+  * A modal window prevent multiple launch of fgfs
+  * Read new fgfs airport format
+  * Refresh airport list only on demand
+  * Aircraft viewer preserve image aspect ratio and auto scale the view to the aircraft dimensions
+  * Several fixes
+
+* 0.4.5
+
+  * Fixed win32 GL context bug.
+  * Scanning for installed airports recognises new directory structure.
+
+* 0.4.4
+
+  * Fixed FlightGear --fullscreen typo.
+  * Restore window size and position at start up.
+  * Added enable-ai-models option.
+  * Support new Scenery/Terrain directory structure.
+  * Removed METAR button.
+
+* 0.4.3
+
+  * Maintain proper aspect ratio of aircraft preview window.
+  * Added control to refresh airport and runway data.
+  * Display aircraft description.
+  * Smarter handling of aircraft aliases.
+  * Fullscreen option at startup.
+
+* 0.4.2
+
+  * Support multiple scenery directories,
+  * Fixed handling of generic I/O file option.
+  * Support for new --random-wind and --proxy options.
+  * Fixed properties output bug.
+  * Display selected aircraft at startup.
+
+* 0.4.1
+
+  * Scan for installed airports in the background.
+  * Cache installed airport codes.
+  * Added a cloud page to the advanced disalog.
+  * Saved airport is selected on startup.
+
+* 0.4.0
+
+  * New wizard style interface to make it easier for first time and infrequent
+    users to get started.  The original interface is now the advanced options 
+    interface.
+  * Aircraft preview (requires plib, simgear and opengl).
+  * New airport browser with incremental search facility.
+  * runways.dat is loaded in the background.
+  * New weather page in advanced dialog.
+
+* 0.3.3
+
+  * Not released.
+
+* 0.3.2
+
+  * Windows updates.
+
+* 0.3.1
+
+  * Use absolute pathnames on Windows.
+
