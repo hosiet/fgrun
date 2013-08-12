@@ -2,6 +2,7 @@
 Type=Application
 Version=1.4
 Name=FlightGear Launch Control
+Keywords=fgrun;fgfs;flight;flightgear;launch;control
 Icon=/usr/share/pixmaps/flightgear.ico
 Exec=fgrun
 Terminal=false
