@@ -3,8 +3,8 @@ Section: games
 Priority: optional
 Maintainer: Debian FlightGear Crew <pkg-fgfs-crew@lists.alioth.debian.org>
 Uploaders: Christopher Baines <cbaines8@gmail.com>
-Build-Depends: debhelper (>= 8.9.9), autotools-dev, libfltk1.1-dev, simgear-dev (>= 2.4.0), libboost-dev, zlib1g-dev (>= 1:1.2.3.4.dfsg-3)
-Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 9), autotools-dev, libfltk1.3-dev, libsimgear-dev (>= 2.10.0), libboost-dev, zlib1g-dev (>= 1:1.2.3.4.dfsg-3)
+Standards-Version: 3.9.4
 Homepage: http://fgrun.sourceforge.net/
 
 Package: fgrun
@@ -13,23 +13,20 @@ Depends: ${shlibs:Depends}, ${misc:Depends}
 Recommends: flightgear
 Description: graphical frontend for running FlightGear
  FlightGear Launch Control (FGRun) is a graphical frontend for running the
- FlightGear Flight Simulator (fgfs). 
+ FlightGear Flight Simulator (fgfs).
  .
- It includes the ability to configure your scenery paths FlightGear setup. 
+ It includes the ability to configure your scenery paths FlightGear setup.
  When selecting an aircraft you are able to view a complete 3d model and see
- its development status and author. When selecting an airport or carrier to 
- launch from you can chose either by the ICAO ID (International Civilian 
- Aviation Organisation Identifier) or the airport id, with the flexibility of 
- selecting a runway and parking position also. 
+ its development status and author. When selecting an airport or carrier to
+ launch from you can chose either by the ICAO ID (International Civilian
+ Aviation Organisation Identifier) or the airport id, with the flexibility of
+ selecting a runway and parking position also.
  .
- When launching the simulation FGRun includes a comprehensive configuration 
+ When launching the simulation FGRun includes a comprehensive configuration
  system, allowing you to directly configure settings such as screen resolution
- and multiplayer settings. 
+ and multiplayer settings.
  .
- FGRun also includes support for TerraSync, a tool included with FlightGear 
+ FGRun also includes support for TerraSync, a tool included with FlightGear
  that allows you to download and use scenery while in the simulation, it can
  also preload the scenery for your selected location as the airport selection
- screen. 
-
- 
- 
+ screen.
