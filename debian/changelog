@@ -1,3 +1,17 @@
+fgrun (1.7.0-1) unstable; urgency=low
+
+  * New upstream release.
+  * Set compat and debhelper dependency to 9
+  * Set fltk dependency to 1.3 (from 1.1)
+  * Set Standards-Version to 3.9.4
+  * Remove some trailing whitespace from the description
+  * Update the rules for cmake
+  * Add Keywords to desktop file
+  * Patch upstream source to build without warning from format string
+  * Patch upstream source to link against libdl
+
+ -- Christopher Baines <cbaines8@gmail.com>  Sun, 11 Aug 2013 15:12:59 +0200
+
 fgrun (1.6.0-1) unstable; urgency=low
 
   * New upstream release (closes: 642661).
