@@ -6,6 +6,8 @@
 %:
 	dh $@
 
-override_dh_auto_configure:
-	dh_auto_configure -- --bindir=/usr/games 
-
+override_dh_auto_install:
+	dh_auto_install
+	mkdir -p debian/fgrun/usr/games
+	mv debian/fgrun/usr/bin/fgrun debian/fgrun/usr/games/
+	rmdir debian/fgrun/usr/bin
