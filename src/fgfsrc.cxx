@@ -87,6 +87,9 @@ Wizard::write_fgfsrc( Fl_Preferences &prefs, std::ostream& os, const char* pfx )
     prefs.get( "fg_scenery", buf, "", buflen-1 );
     os << pfx << "--fg-scenery=" << buf;
 
+    if (prefs.get( "ts_dir", buf, "", buflen-1 ) && buf[0] != 0)
+        os << pfx << "--terrasync-dir=" << buf;
+
     prefs.get( "fg_aircraft", buf, "", buflen-1 );
     if ( buf[0] != 0 )
         os << pfx << "--fg-aircraft=" << buf;
@@ -120,12 +123,8 @@ Wizard::write_fgfsrc( Fl_Preferences &prefs, std::ostream& os, const char* pfx )
     double dVal;
 
     // Features - only set non-default values.
-    if (prefs.get( "game_mode", iVal, 0 ) && iVal)
-        os << pfx << "--enable-game-mode";
     if (prefs.get( "splash_screen", iVal, 1 ) && !iVal)
         os << pfx << "--disable-splash-screen";
-    if (prefs.get( "intro_music", iVal, 1 ) && !iVal)
-        os << pfx << "--disable-intro-music";
     if (prefs.get( "mouse_pointer", iVal, 0 ) && iVal)
         os << pfx << "--enable-mouse-pointer";
     if (prefs.get( "random_objects", iVal, 0 ) && iVal)
@@ -167,8 +166,8 @@ Wizard::write_fgfsrc( Fl_Preferences &prefs, std::ostream& os, const char* pfx )
             os << pfx << "--failure=pitot";
         if (prefs.get( "failure_static", iVal, 0 ) && iVal)
             os << pfx << "--failure=static";
-        if (prefs.get( "failure_system", iVal, 0 ) && iVal)
-            os << pfx << "--failure=system";
+        if (prefs.get( "failure_electrical", iVal, 0 ) && iVal)
+            os << pfx << "--failure=electrical";
         if (prefs.get( "failure_vacuum", iVal, 0 ) && iVal)
             os << pfx << "--failure=vacuum";
     }
@@ -189,7 +188,7 @@ Wizard::write_fgfsrc( Fl_Preferences &prefs, std::ostream& os, const char* pfx )
     prefs.get( "fdm", buf, "", buflen-1 );
     if (buf[0] != 0)
     {
-        if (strcmp( "jsb", buf ) != 0)
+        if (strcmp( "automatic selection", buf ) != 0)
             os << pfx << "--fdm=" << buf;
         else if (prefs.get( "no_trim", iVal, 0 ) && iVal)
             os << pfx << "--notrim"; // Only "jsb" understands --notrim
@@ -319,6 +318,12 @@ Wizard::write_fgfsrc( Fl_Preferences &prefs, std::ostream& os, const char* pfx )
         os << pfx << "--texture-filtering=" << buf;
     if (prefs.get( "materials-file", buf, "", buflen-1 ) && buf[0] != 0)
         os << pfx << "--materials-file=" << buf;
+    if (prefs.get( "rembrandt", iVal, 0 ) && iVal)
+        os << pfx << "--enable-rembrandt";
+    else if (prefs.get( "anti-aliasing", buf, "1", buflen-1 ) && strcmp(buf,"1")!=0) {
+        os << pfx << "--prop:/sim/rendering/multi-sample-buffers=1";
+        os << pfx << "--prop:/sim/rendering/multi-samples=" << buf;
+    }
 
     // Time
     if (prefs.get( "time-match-real", iVal, 1 ) && iVal &&
@@ -346,11 +351,10 @@ Wizard::write_fgfsrc( Fl_Preferences &prefs, std::ostream& os, const char* pfx )
     if ( prefs.get( "season", buf, "", buflen-1 ) && strcmp(buf,"summer")!=0 )
         os << pfx << "--season=" << buf;
 
-    if ( prefs.get( "terrasync", iVal, 0 ) && iVal )
-    {
-        prefs.get( "terrasync_port", iVal, 5505 );
-        os << pfx << "--atlas=socket,out,5,localhost," << iVal << ",udp";
-    }
+    if ( prefs.get( "terrasync", iVal, 1 ) && iVal )
+        os << pfx << "--enable-terrasync";
+    else
+        os << pfx << "--disable-terrasync";
 
     // Network.
     if (prefs.get( "httpd", iVal, 0 ) && iVal)
@@ -367,6 +371,18 @@ Wizard::write_fgfsrc( Fl_Preferences &prefs, std::ostream& os, const char* pfx )
         os << pfx << "--multiplay=" << buf;
     if (prefs.get( "multiplay2", buf, "", buflen-1 ) && buf[0] != 0)
         os << pfx << "--multiplay=" << buf;
+    // FGCom options.
+    if ( prefs.get( "fgcom-disabled", iVal, 1 ) && iVal )
+        os << pfx << "--disable-fgcom";
+    if ( prefs.get( "fgcom-builtin", iVal, 1 ) && iVal )
+        os << pfx << "--enable-fgcom";
+    if ( prefs.get( "fgcom-standalone", iVal, 1 ) && iVal ) {
+         char buf1[ buflen ];
+         if ( prefs.get( "fgcom-hostname", buf, "", buflen-1 ) &&
+              prefs.get( "fgcom-port", buf1, "", buflen-1 ) &&
+              buf[0] != 0 && buf1[0] != 0)
+              os << pfx << "--generic=socket,out,2," << buf << "," << buf1 << ",udp,fgcom";
+    }
 
     if (prefs.get( "proxy", buf, "", buflen-1 ) && buf[0] != 0)
         os << pfx << "--proxy=" << buf;
@@ -390,6 +406,8 @@ Wizard::write_fgfsrc( Fl_Preferences &prefs, std::ostream& os, const char* pfx )
         buf[0] = 0;
         prefs.get( Fl_Preferences::Name("io-item-%d", i),
                    buf, "", buflen-1 );
+        // skip fgcom because he is managed by "fgcom-standalone"
+        if ( std::string(buf).find("fgcom") != std::string::npos ) continue;
         if ( strlen( buf ) > 0 )
             os << pfx << buf;
     }

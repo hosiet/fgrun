@@ -2,7 +2,7 @@
 # Copyright (C) 2008 Frederic Bouvier
 # This file is distributed under the same license as the fgrun package.
 # Stefan <fgfs.stefan@gmail.com>, 2008.
-# Gijs de Rooy <gijsrooy@hotmail.com>, 2010, 2011.
+# Gijs de Rooy <gijsrooy@hotmail.com>, 2010 - 2013.
 #
 msgid ""
 msgstr ""
@@ -12,10 +12,10 @@ msgstr ""
 "PO-Revision-Date: 2010-05-23 18:36+0200\n"
 "Last-Translator: Gijs de Rooy <gijsrooy@hotmail.com>\n"
 "Language-Team: Dutch\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CP1252\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: src/logwin.cxx:34
@@ -56,7 +56,6 @@ msgstr ""
 msgid "8.0"
 msgstr ""
 
-# betere suggesties welkom
 #: src/wizard.cxx:942
 msgid ":"
 msgstr ""
@@ -170,6 +169,10 @@ msgstr "Vliegvelden cache"
 #: src/advanced.cxx:995
 msgid "Airspeed:"
 msgstr "Luchtsnelheid:"
+
+#: src/wizard.fl
+msgid "All airports"
+msgstr ""
 
 #: src/advanced.cxx:989
 msgid "Altitude:"
@@ -303,10 +306,6 @@ msgstr ""
 msgid "Debugging"
 msgstr ""
 
-#: src/wizard.cxx:1006
-msgid "Defaults"
-msgstr "Fabrieksinstellingen"
-
 #: src/advanced.cxx:1400 src/advanced.cxx:1628 src/advanced.cxx:1691
 #: src/advanced.cxx:1724 src/advanced.cxx:1756 src/wizard.cxx:537
 #: src/wizard.cxx:566 src/wizard.cxx:614
@@ -351,9 +350,17 @@ msgstr "Uitgeschakeld"
 msgid "Display"
 msgstr "Scherm"
 
+#: src/wizard.fl
+msgid "Display all airports"
+msgstr "Toon alle vliegvelden"
+
+#: src/wizard.fl
+msgid "Display only installed airports"
+msgstr "Toon alleen geïnstalleerde vliegvelden"
+
 #: src/advanced.cxx:767
 msgid "Display splash screen at startup"
-msgstr "Laat splash screen zien bij het starten"
+msgstr "Toon splash screen bij het starten"
 
 #: src/advanced.cxx:827
 msgid "Distance attenuation"
@@ -505,6 +512,14 @@ msgstr ""
 #: src/advanced.cxx:891
 msgid "FDM:"
 msgstr ""
+
+#: src/advanced.cxx:1466
+msgid "FGCom built-in"
+msgstr "FGCom built-in"
+
+#: src/advanced.cxx:1472
+msgid "FGCom standalone"
+msgstr "FGCom standalone"
 
 #: src/wizard.cxx:522
 msgid "FG_AIRCRAFT:"
@@ -741,6 +756,10 @@ msgstr "Input poort nummer"
 # geen vertaling nodig -- zelfde in NL
 #: src/advanced.cxx:1382 src/advanced_funcs.cxx:222
 msgid "Input/Output"
+msgstr ""
+
+#: src/wizard.fl
+msgid "Installed airports"
 msgstr ""
 
 # geen vertaling nodig -- zelfde in NL
@@ -1121,6 +1140,10 @@ msgstr ""
 msgid "Resolution :"
 msgstr "Resolutie :"
 
+#: src/wizard.cxx:1006
+msgid "Restore default settings"
+msgstr "Fabrieksinstellingen"
+
 #: src/advanced.cxx:1020
 msgid "Roll:"
 msgstr "Rolhoek:"
@@ -1253,7 +1276,7 @@ msgstr "Schaduwen"
 
 #: src/wizard.cxx:753
 msgid "Show command line"
-msgstr "Laat command line zien"
+msgstr "Toon command line"
 
 #: src/advanced.cxx:1091
 msgid "Sky Blend"

@@ -12,10 +12,10 @@ msgstr ""
 "PO-Revision-Date: 2012-02-27 14:27-0300\n"
 "Last-Translator: Lizandro <lizandrof@gmail.com>\n"
 "Language-Team: Portuguese <www.br.flightgear.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: BRAZIL\n"
@@ -165,6 +165,10 @@ msgstr ""
 "Velocidade\n"
 "do Ar:"
 
+#: src/wizard.fl
+msgid "All airports"
+msgstr ""
+
 #: src/advanced.cxx:989
 msgid "Altitude:"
 msgstr "Altitude:"
@@ -296,10 +300,6 @@ msgstr ""
 msgid "Debugging"
 msgstr "Depuração"
 
-#: src/wizard.cxx:1006
-msgid "Defaults"
-msgstr "Padrões"
-
 #: src/advanced.cxx:1400 src/advanced.cxx:1628 src/advanced.cxx:1691
 #: src/advanced.cxx:1724 src/advanced.cxx:1756 src/wizard.cxx:537
 #: src/wizard.cxx:566 src/wizard.cxx:614
@@ -341,6 +341,14 @@ msgstr "Desabilitada"
 #: src/wizard.cxx:764
 msgid "Display"
 msgstr "Visualização"
+
+#: src/wizard.fl
+msgid "Display all airports"
+msgstr ""
+
+#: src/wizard.fl
+msgid "Display only installed airports"
+msgstr ""
 
 #: src/advanced.cxx:767
 msgid "Display splash screen at startup"
@@ -493,6 +501,14 @@ msgstr "MDV :"
 #: src/advanced.cxx:891
 msgid "FDM:"
 msgstr "MDV:"
+
+#: src/advanced.cxx:1466
+msgid "FGCom built-in"
+msgstr "FGCom built-in"
+
+#: src/advanced.cxx:1472
+msgid "FGCom standalone"
+msgstr "FGCom standalone"
 
 #: src/wizard.cxx:522
 msgid "FG_AIRCRAFT:"
@@ -722,6 +738,10 @@ msgstr "Número da porta IP de entrada"
 #: src/advanced.cxx:1382 src/advanced_funcs.cxx:222
 msgid "Input/Output"
 msgstr "Entrada/Saída"
+
+#: src/wizard.fl
+msgid "Installed airports"
+msgstr ""
 
 #: src/advanced.cxx:1588
 msgid "Internal"
@@ -1084,6 +1104,10 @@ msgstr "Redefinir"
 #: src/wizard.cxx:768
 msgid "Resolution :"
 msgstr "Resolução :"
+
+#: src/wizard.cxx:1006
+msgid "Restore default settings"
+msgstr "Padrões"
 
 #: src/advanced.cxx:1020
 msgid "Roll:"

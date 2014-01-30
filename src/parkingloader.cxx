@@ -14,6 +14,7 @@
 //
 
 #include <cstdlib>
+#include <string>
 
 #include "parkingloader.h"
 
@@ -29,7 +30,7 @@ void  ParkingLoader::endXML () {
 }
 
 void  ParkingLoader::startElement( const char * name, const XMLAttributes &atts ) {
-    if (name == string("Parking"))
+    if (name == std::string("Parking"))
     {
         std::string type, gateName, gateNumber;
         for (int i = 0; i < atts.size(); i++)

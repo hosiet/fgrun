@@ -149,6 +149,13 @@ Fl_Menu_Item Advanced::menu_texture_filtering[] = {
  {0,0,0,0,0,0,0,0,0}
 };
 
+Fl_Menu_Item Advanced::menu_anti_aliasing[] = {
+ {_("no anti-aliasing"), 0,  0, (void*)"1", 0, FL_NORMAL_LABEL, 0, 12, 0},
+ {_("2"), 0,  0, (void*)"2", 0, FL_NORMAL_LABEL, 0, 12, 0},
+ {_("4"), 0,  0, (void*)"4", 0, FL_NORMAL_LABEL, 0, 12, 0},
+ {0,0,0,0,0,0,0,0,0}
+};
+
 void
 Advanced::init()
 {
@@ -190,6 +197,12 @@ Advanced::init()
         menu_texture_filtering[i].text = _( menu_texture_filtering[i].text );
     }
     texture_filtering->menu(menu_texture_filtering);
+	
+    for ( int i = 0; menu_anti_aliasing[i].text != 0; ++i )
+    {
+        menu_anti_aliasing[i].text = _( menu_anti_aliasing[i].text );
+    }
+    anti_aliasing->menu(menu_anti_aliasing);
 
     const int buflen = FL_PATH_MAX;
     char buf[ buflen ];
@@ -202,13 +215,15 @@ Advanced::init()
     simgear::PathList files = directory.children( simgear::Dir::TYPE_FILE | simgear::Dir::NO_DOT_OR_DOTDOT, ".xml" );
     for ( simgear::PathList::iterator ii = files.begin(); ii != files.end(); ++ii )
     {
+        // skip fgcom because he is managed by "fgcom-standalone"
+        if( ii->file() == "fgcom.xml" ) continue;
         SGPath p(ii->file());
         io_generic_file->add(p.base().c_str());
     }
     if ( io_generic_file->size() )
         io_generic_file->value(0);
 
-    set_choice( fdm, "jsb" );
+    set_choice( fdm, "automatic selection" );
     set_choice( log_level, "alert" );
 
     page_list->add(_("General"));
