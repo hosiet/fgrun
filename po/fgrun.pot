@@ -867,6 +867,14 @@ msgstr ""
 msgid "Transition (ft):"
 msgstr ""
 
+#: src/advanced.cxx:1466
+msgid "FGCom built-in"
+msgstr ""
+
+#: src/advanced.cxx:1472
+msgid "FGCom standalone"
+msgstr ""
+
 #: src/wizard.cxx:474
 msgid "FlightGear Wizard"
 msgstr ""
@@ -1173,7 +1181,7 @@ msgid "Quit"
 msgstr ""
 
 #: src/wizard.cxx:1006
-msgid "Defaults"
+msgid "Restore default settings"
 msgstr ""
 
 #: src/wizard.cxx:1007
@@ -1240,6 +1248,22 @@ msgstr ""
 
 #: src/wizard.cxx:1097
 msgid "Airport to fetch : "
+msgstr ""
+
+#: src/wizard.fl
+msgid "All airports"
+msgstr ""
+
+#: src/wizard.fl
+msgid "Display all airports"
+msgstr ""
+
+#: src/wizard.fl
+msgid "Installed airports"
+msgstr ""
+
+#: src/wizard.fl
+msgid "Display only installed airports"
 msgstr ""
 
 #: src/wizard_funcs.cxx:83 src/advanced_funcs.cxx:107

@@ -71,14 +71,13 @@ string_to_coverage( const char* s )
 void
 Advanced::save_settings( Fl_Preferences& prefs )
 {
+    prefs.set( "ts_dir", ts_dir->value());
     prefs.set( "browser", browser->value() );
     prefs.set( "control", (const char *)control->mvalue()->user_data() );
     prefs.set( "lang", lang->value());
     prefs.set( "config", config->value() );
 
-    prefs.set("game_mode", game_mode->value());
     prefs.set("splash_screen", splash_screen->value());
-    prefs.set("intro_music", intro_music->value());
     prefs.set("mouse_pointer", mouse_pointer->value());
     prefs.set("random_objects", random_objects->value());
     prefs.set("random_trees", random_trees->value());
@@ -93,9 +92,9 @@ Advanced::save_settings( Fl_Preferences& prefs )
     prefs.set("distance_attenuation", distance_attenuation->value());
     prefs.set("specular_highlight", specular_highlight->value());
     prefs.set("failure", failure->value());
+    prefs.set("failure_electrical", failure_electrical->value());
     prefs.set("failure_pitot", failure_pitot->value());
     prefs.set("failure_static", failure_static->value());
-    prefs.set("failure_system", failure_system->value());
     prefs.set("failure_vacuum", failure_vacuum->value());
     prefs.set("ai_models", ai_models->value());
     prefs.set("ai_traffic", ai_traffic->value());
@@ -140,6 +139,7 @@ Advanced::save_settings( Fl_Preferences& prefs )
     prefs.set("skyblend", skyblend->value());
     prefs.set("textures", textures->value());
     prefs.set("wireframe", wireframe->value());
+    prefs.set("rembrandt", rembrandt->value());
     if (fog_disabled->value())
 	prefs.set("fog", "disabled");
     else if (fog_fastest->value())
@@ -161,6 +161,7 @@ Advanced::save_settings( Fl_Preferences& prefs )
     prefs.set("fov", fov->value());
     prefs.set("texture-filtering", (const char *)texture_filtering->mvalue()->user_data());
     prefs.set("materials-file", materials_file->value());
+    prefs.set("anti-aliasing", (const char *)anti_aliasing->mvalue()->user_data());
 
     prefs.set("time-match-real", time_match_real->value());
     prefs.set("time-offset", time_offset_value->value());
@@ -183,6 +184,12 @@ Advanced::save_settings( Fl_Preferences& prefs )
     prefs.set( "callsign", callsign->value() );
     prefs.set( "multiplay1", multiplay1->value() );
     prefs.set( "multiplay2", multiplay2->value() );
+    // FGCom options
+    prefs.set( "fgcom-disabled", fgcom_disabled->value() );
+    prefs.set( "fgcom-builtin", fgcom_builtin->value() );
+    prefs.set( "fgcom-standalone", fgcom_standalone->value() );
+    prefs.set( "fgcom-hostname", fgcom_hostname->value() );
+    prefs.set( "fgcom-port", fgcom_port->value() );
 
     prefs.set( "proxy", proxy->value() );
 
@@ -263,6 +270,9 @@ Advanced::load_settings( Fl_Preferences& prefs )
     prefs.get( "fg_scenery", buf, not_set, buflen-1 );
     fg_scenery_->value( buf );
 
+    prefs.get( "ts_dir", buf, "", buflen-1 );
+    ts_dir->value( buf );
+
     prefs.get( "aircraft", buf, not_set, buflen-1 );
     aircraft_->value( buf );
 
@@ -299,12 +309,8 @@ Advanced::load_settings( Fl_Preferences& prefs )
     int iVal;
     double dVal;
 
-    prefs.get("game_mode", iVal, 0);
-    game_mode->value(iVal);
     prefs.get("splash_screen", iVal, 1);
     splash_screen->value(iVal);
-    prefs.get("intro_music", iVal, 1);
-    intro_music->value(iVal);
     prefs.get("mouse_pointer", iVal, 0);
     mouse_pointer->value(iVal);
     prefs.get("random_objects", iVal, 0);
@@ -335,12 +341,12 @@ Advanced::load_settings( Fl_Preferences& prefs )
     prefs.get("failure", iVal, 0);
     failure->value( iVal );
     failure->do_callback();
+    prefs.get("failure_electrical", iVal, 0);
+    failure_electrical->value( iVal );
     prefs.get("failure_pitot", iVal, 0);
     failure_pitot->value( iVal );
     prefs.get("failure_static", iVal, 0);
     failure_static->value( iVal );
-    prefs.get("failure_system", iVal, 0);
-    failure_system->value( iVal );
     prefs.get("failure_vacuum", iVal, 0);
     failure_vacuum->value( iVal );
     prefs.get("ai_models", iVal, 0);
@@ -352,7 +358,7 @@ Advanced::load_settings( Fl_Preferences& prefs )
     else
         ai_traffic->activate();
 
-    prefs.get("fdm", buf, "jsb", buflen-1);
+    prefs.get("fdm", buf, "automatic selection", buflen-1);
     set_choice(fdm, buf);
     fdm->do_callback();
     prefs.get("notrim", iVal, 0);
@@ -432,6 +438,9 @@ Advanced::load_settings( Fl_Preferences& prefs )
     textures->value(iVal);
     prefs.get("wireframe", iVal, 0);
     wireframe->value(iVal);
+    prefs.get("rembrandt", iVal, 0);
+    rembrandt->value(iVal);
+    rembrandt->do_callback();
     prefs.get("shading", buf, "smooth", buflen-1);
     if (strcmp(buf, "smooth") == 0)
 	shading_smooth->setonly();
@@ -463,6 +472,8 @@ Advanced::load_settings( Fl_Preferences& prefs )
     set_choice_from_data( texture_filtering, buf );
     prefs.get("materials-file", buf, "", buflen-1);
     materials_file->value(buf);
+    prefs.get( "anti-aliasing", buf, "1", buflen-1 );
+    set_choice_from_data( anti_aliasing, buf );
 
     prefs.get( "time-match-real", iVal, 1 );
     if (iVal) time_match_real->setonly();
@@ -516,6 +527,26 @@ Advanced::load_settings( Fl_Preferences& prefs )
     multiplay1->value( buf );
     prefs.get( "multiplay2", buf, "", buflen-1 );
     multiplay2->value( buf );
+
+    // FGCom options
+    prefs.get( "fgcom-disabled", iVal, 1 );
+    if (iVal) fgcom_disabled->setonly();
+    prefs.get( "fgcom-builtin", iVal, 0 );
+    if (iVal) fgcom_builtin->setonly();
+    prefs.get( "fgcom-standalone", iVal, 0 );
+    if (iVal)
+    {
+        fgcom_standalone->setonly();
+        fgcom_hostname->activate();
+        fgcom_port->activate();
+    }
+    prefs.get( "fgcom-hostname", buf, "", buflen-1 );
+    if (buf[0] == 0 )
+        fgcom_hostname->value( "127.0.0.1" );
+    else
+        fgcom_hostname->value( buf );
+    prefs.get( "fgcom-port", iVal, 16661 );
+    fgcom_port->value( double(iVal) );
 
     prefs.get( "proxy", buf, "", buflen-1 );
     proxy->value( buf );
@@ -621,14 +652,13 @@ Advanced::load_settings( Fl_Preferences& prefs )
 void
 Advanced::reset_settings( Fl_Preferences& prefs )
 {
+    prefs.deleteEntry( "ts_dir" );
     prefs.deleteEntry( "browser" );
     prefs.deleteEntry( "control" );
     prefs.deleteEntry( "lang" );
     prefs.deleteEntry( "config" );
 
-    prefs.deleteEntry("game_mode" );
     prefs.deleteEntry("splash_screen" );
-    prefs.deleteEntry("intro_music" );
     prefs.deleteEntry("mouse_pointer" );
     prefs.deleteEntry("random_objects" );
     prefs.deleteEntry("random_trees" );
@@ -643,9 +673,9 @@ Advanced::reset_settings( Fl_Preferences& prefs )
     prefs.deleteEntry("distance_attenuation" );
     prefs.deleteEntry("specular_highlight" );
     prefs.deleteEntry("failure" );
+    prefs.deleteEntry("failure_electrical" );
     prefs.deleteEntry("failure_pitot" );
     prefs.deleteEntry("failure_static" );
-    prefs.deleteEntry("failure_system" );
     prefs.deleteEntry("failure_vacuum" );
     prefs.deleteEntry("ai_models" );
     prefs.deleteEntry("ai_traffic" );
@@ -690,6 +720,7 @@ Advanced::reset_settings( Fl_Preferences& prefs )
     prefs.deleteEntry("skyblend" );
     prefs.deleteEntry("textures" );
     prefs.deleteEntry("wireframe" );
+    prefs.deleteEntry("rembrandt" );
     prefs.deleteEntry("fog" );
     prefs.deleteEntry("shading" );
     prefs.deleteEntry("geometry" );
@@ -700,6 +731,7 @@ Advanced::reset_settings( Fl_Preferences& prefs )
     prefs.deleteEntry("fov" );
     prefs.deleteEntry("texture-filtering" );
     prefs.deleteEntry("materials-file" );
+    prefs.deleteEntry("anti-aliasing" );
 
     prefs.deleteEntry("time-match-real" );
     prefs.deleteEntry("time-offset" );
@@ -722,6 +754,12 @@ Advanced::reset_settings( Fl_Preferences& prefs )
     prefs.deleteEntry( "callsign" );
     prefs.deleteEntry( "multiplay1" );
     prefs.deleteEntry( "multiplay2" );
+    // FGCom options
+    prefs.deleteEntry( "fgcom-disabled" );
+    prefs.deleteEntry( "fgcom-builtin" );
+    prefs.deleteEntry( "fgcom-standalone" );
+    prefs.deleteEntry( "fgcom-hostname" );
+    prefs.deleteEntry( "fgcom-port" );
 
     prefs.deleteEntry( "proxy" );
 

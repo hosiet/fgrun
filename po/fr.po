@@ -12,10 +12,10 @@ msgstr ""
 "PO-Revision-Date: 2008-01-05 19:05+0100\n"
 "Last-Translator: <fredb@users.sourceforge.net>\n"
 "Language-Team: French\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CP1252\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: src/logwin.cxx:34
@@ -160,6 +160,10 @@ msgstr ""
 msgid "Airspeed:"
 msgstr "Vitesse:"
 
+#: src/wizard.fl
+msgid "All airports"
+msgstr "Tous les aéroports"
+
 #: src/advanced.cxx:989
 msgid "Altitude:"
 msgstr "Altitude:"
@@ -288,10 +292,6 @@ msgstr ""
 msgid "Debugging"
 msgstr "Déboguage"
 
-#: src/wizard.cxx:1006
-msgid "Defaults"
-msgstr "Remise à Zéro"
-
 #: src/advanced.cxx:1400 src/advanced.cxx:1628 src/advanced.cxx:1691
 #: src/advanced.cxx:1724 src/advanced.cxx:1756 src/wizard.cxx:537
 #: src/wizard.cxx:566 src/wizard.cxx:614
@@ -328,11 +328,19 @@ msgstr "Direction:"
 
 #: src/advanced.cxx:1127
 msgid "Disabled"
-msgstr "débrayé"
+msgstr "Désactivé"
 
 #: src/wizard.cxx:764
 msgid "Display"
 msgstr "Affichage"
+
+#: src/wizard.fl
+msgid "Display all airports"
+msgstr "Afficher tous les aéroports"
+
+#: src/wizard.fl
+msgid "Display only installed airports"
+msgstr "Afficher uniquement les aéroports installés"
 
 #: src/advanced.cxx:767
 msgid "Display splash screen at startup"
@@ -486,6 +494,14 @@ msgstr "Modèle de vol :"
 #: src/advanced.cxx:891
 msgid "FDM:"
 msgstr "Modèle de vol:"
+
+#: src/advanced.cxx:1466
+msgid "FGCom built-in"
+msgstr "FGCom intégré"
+
+#: src/advanced.cxx:1472
+msgid "FGCom standalone"
+msgstr "FGCom autonome"
 
 #: src/wizard.cxx:522
 msgid "FG_AIRCRAFT:"
@@ -715,6 +731,10 @@ msgstr "Numéro de port IP en entrée"
 #: src/advanced.cxx:1382 src/advanced_funcs.cxx:222
 msgid "Input/Output"
 msgstr "Entrée/Sortie"
+
+#: src/wizard.fl
+msgid "Installed airports"
+msgstr "Aéroports installés"
 
 #: src/advanced.cxx:1588
 msgid "Internal"
@@ -1074,6 +1094,10 @@ msgstr "Remise à zéro"
 #: src/wizard.cxx:768
 msgid "Resolution :"
 msgstr "Résolution :"
+
+#: src/wizard.cxx:1006
+msgid "Restore default settings"
+msgstr "Remise à Zéro"
 
 #: src/advanced.cxx:1020
 msgid "Roll:"

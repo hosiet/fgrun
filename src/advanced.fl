@@ -39,7 +39,7 @@ class Advanced {open
       Fl_Browser page_list {
         callback {if (o->value() > 0)
   show_page(o->value()-1);}
-        private xywh {0 0 150 430} type Hold labelsize 12 textsize 12
+        private xywh {0 0 120 430} type Hold labelsize 12 textsize 12
       }
       Fl_Box {} {
         xywh {150 0 485 430} resizable
@@ -65,29 +65,29 @@ class Advanced {open
       } {
         Fl_Choice control {
           label {Control:} open
-          private tooltip {Primary control mode} xywh {250 175 150 25} down_box BORDER_BOX labelsize 12 textsize 12
+          private tooltip {Primary control mode} xywh {250 205 150 25} down_box BORDER_BOX labelsize 12 textsize 12
         } {}
         Fl_Input lang {
           label {Language:}
-          private xywh {250 220 80 25} labelsize 12 textsize 12
+          private xywh {250 250 80 25} labelsize 12 textsize 12
         }
         Fl_Input browser {
           label {Browser:}
-          private xywh {250 250 355 25} labelsize 12 textsize 12
+          private xywh {250 280 355 25} labelsize 12 textsize 12
         }
         Fl_Button {} {
           label {...}
           callback {fg_browser_cb();}
-          private xywh {610 250 25 25} labelsize 12
+          private xywh {610 280 25 25} labelsize 12
         }
         Fl_Input config {
           label {Config:}
-          private tooltip {Path to additional XML properties file} xywh {250 280 355 25} labelsize 12 textsize 12
+          private tooltip {Path to additional XML properties file} xywh {250 310 355 25} labelsize 12 textsize 12
         }
         Fl_Button {} {
           label {...}
           callback {fg_config_cb();}
-          private xywh {610 280 25 25} labelsize 12
+          private xywh {610 310 25 25} labelsize 12
         }
         Fl_Output fg_exe_ {
           label {Executable:}
@@ -101,17 +101,21 @@ class Advanced {open
           label {FG_SCENERY:}
           xywh {250 85 385 25} labelsize 12 textsize 12
         }
+        Fl_Input ts_dir {
+          label {TerraSync directory:}
+          private tooltip {Leave this field empty in order to use the default path.} xywh {250 115 385 25} labelsize 12 textsize 12
+        }
         Fl_Output airport_ {
           label {Airport:}
-          xywh {250 115 240 25} labelsize 12 textsize 12
+          xywh {250 145 240 25} labelsize 12 textsize 12
         }
         Fl_Output runway_ {
           label {Runway:}
-          xywh {555 115 80 25} labelsize 12 textsize 12
+          xywh {555 145 80 25} labelsize 12 textsize 12
         }
         Fl_Output aircraft_ {
           label {Aircraft:}
-          xywh {250 145 240 25} labelsize 12 textsize 12
+          xywh {250 175 240 25} labelsize 12 textsize 12
         }
         Fl_Box {} {
           xywh {255 405 25 25} resizable
@@ -121,25 +125,21 @@ class Advanced {open
         label Features open
         private xywh {150 0 490 430} labelfont 1 labelsize 16 align 21
       } {
-        Fl_Check_Button game_mode {
-          label {Game Mode}
-          private tooltip {Enable full screen game mode} xywh {175 50 160 25} down_box DOWN_BOX labelsize 12
+        Fl_Check_Button specular_highlight {
+          label {Specular highlight}
+          private tooltip {Enable specular reflections on textured objects} xywh {175 50 160 25} down_box DOWN_BOX labelsize 12
         }
         Fl_Check_Button splash_screen {
           label {Splash Screen}
           private tooltip {Display splash screen at startup} xywh {175 80 160 25} down_box DOWN_BOX value 1 labelsize 12
         }
-        Fl_Check_Button intro_music {
-          label {Intro Music}
-          private tooltip {Enable introduction music during start up} xywh {175 110 160 25} down_box DOWN_BOX value 1 labelsize 12
-        }
         Fl_Check_Button mouse_pointer {
           label {Mouse Pointer}
-          private tooltip {Enable extra mouse pointer} xywh {175 140 160 25} down_box DOWN_BOX labelsize 12
+          private tooltip {Enable extra mouse pointer} xywh {175 110 160 25} down_box DOWN_BOX labelsize 12
         }
         Fl_Check_Button random_objects {
           label {Random Objects}
-          private tooltip {Enable random scenery objects} xywh {175 170 160 25} down_box DOWN_BOX labelsize 12
+          private tooltip {Enable random scenery objects} xywh {175 140 160 25} down_box DOWN_BOX labelsize 12
         }
         Fl_Check_Button panel {
           label Panel
@@ -165,51 +165,51 @@ else
           label {Auto-coordination}
           private tooltip {Enable auto-coordinated turns.} xywh {345 200 140 25} down_box DOWN_BOX labelsize 12
         }
+        Fl_Check_Button random_trees {
+          label {Random Trees}
+          private xywh {175 170 160 25} down_box DOWN_BOX labelsize 12
+        }
         Fl_Check_Button horizon_effect {
           label {Horizon effect}
-          private tooltip {Enable celestial body growth illusion near the horizon} xywh {175 230 160 25} down_box DOWN_BOX labelsize 12
+          private tooltip {Enable celestial body growth illusion near the horizon} xywh {175 200 160 25} down_box DOWN_BOX labelsize 12
         }
         Fl_Check_Button enhanced_lighting {
           label {Enhanced lighting}
-          private tooltip {Enable enhanced runway lighting} xywh {175 260 160 25} down_box DOWN_BOX labelsize 12
+          private tooltip {Enable enhanced runway lighting} xywh {175 230 160 25} down_box DOWN_BOX labelsize 12
         }
         Fl_Check_Button distance_attenuation {
           label {Distance attenuation}
-          private tooltip {Enable runway light distance attenuation} xywh {175 290 160 25} down_box DOWN_BOX labelsize 12
+          private tooltip {Enable runway light distance attenuation} xywh {175 260 160 25} down_box DOWN_BOX labelsize 12
         }
         Fl_Check_Button hud_3d {
           label {Hud-3D}
           private tooltip {Enable 3D HUD} xywh {345 170 140 25} down_box DOWN_BOX labelsize 12
         }
-        Fl_Check_Button specular_highlight {
-          label {Specular highlight}
-          private tooltip {Enable specular reflections on textured objects} xywh {175 320 160 25} down_box DOWN_BOX labelsize 12
-        }
         Fl_Check_Button failure {
           label Failures
           callback {if (o->value()) {
+  failure_electrical->activate();
   failure_pitot->activate();
   failure_static->activate();
-  failure_system->activate();
   failure_vacuum->activate();
 } else {
+  failure_electrical->deactivate();
   failure_pitot->deactivate();
   failure_static->deactivate();
-  failure_system->deactivate();
   failure_vacuum->deactivate();
 }}
           private xywh {485 50 150 25} down_box DOWN_BOX labelsize 12
         }
+        Fl_Check_Button failure_electrical {
+          label electrical
+          private xywh {505 75 130 25} down_box DOWN_BOX labelsize 12 deactivate
+        }
         Fl_Check_Button failure_pitot {
           label pitot
-          private xywh {505 75 130 25} down_box DOWN_BOX labelsize 12 deactivate
+          private xywh {505 100 130 25} down_box DOWN_BOX labelsize 12 deactivate
         }
         Fl_Check_Button failure_static {
           label static
-          private xywh {505 100 130 25} down_box DOWN_BOX labelsize 12 deactivate
-        }
-        Fl_Check_Button failure_system {
-          label system
           private xywh {505 125 130 25} down_box DOWN_BOX labelsize 12 deactivate
         }
         Fl_Check_Button failure_vacuum {
@@ -223,11 +223,7 @@ else
         }
         Fl_Check_Button ai_traffic {
           label {AI Traffic}
-          private xywh {345 260 140 25} down_box DOWN_BOX labelsize 12
-        }
-        Fl_Check_Button random_trees {
-          label {Random Trees}
-          private xywh {175 200 160 25} down_box DOWN_BOX labelsize 12
+          private xywh {360 260 140 25} down_box DOWN_BOX labelsize 12
         }
         Fl_Box {} {
           xywh {615 405 25 25} resizable
@@ -239,14 +235,19 @@ else
       } {
         Fl_Choice fdm {
           label {FDM:}
-          callback {if (strcmp(o->text(), "jsb") == 0){
-  notrim->activate();
-} else {
-  notrim->deactivate();
-}}
-          private tooltip {Core Flight Dynamics Model} xywh {270 45 105 25} down_box BORDER_BOX labelsize 12 textsize 12
+          callback {if (strcmp(o->text(), "automatic selection") == 0){
+              notrim->activate();
+            } else {
+              notrim->deactivate();
+            }
+          }
+          private tooltip {Core Flight Dynamics Model} xywh {270 45 140 25} down_box BORDER_BOX labelsize 12 textsize 12
         } {
           MenuItem {} {
+            label {automatic selection}
+            private xywh {0 0 100 20} labelsize 12
+          }
+		  MenuItem {} {
             label ada
             private xywh {0 0 100 20} labelsize 12
           }
@@ -256,10 +257,6 @@ else
           }
           MenuItem {} {
             label external
-            private xywh {0 0 100 20} labelsize 12
-          }
-          MenuItem {} {
-            label jsb
             private xywh {0 0 100 20} labelsize 12
           }
           MenuItem {} {
@@ -439,6 +436,15 @@ else
           label Wireframe
           private tooltip {Enable wireframe drawing mode} xywh {180 190 120 25} down_box DOWN_BOX labelsize 12
         }
+        Fl_Check_Button rembrandt {
+          label Rembrandt
+          callback {if (o->value()) {
+            anti_aliasing->deactivate();
+          } else {
+            anti_aliasing->activate();
+          }}
+          private tooltip {Enable project Rembrandt (deferred rendering)} xywh {180 220 120 25} down_box DOWN_BOX labelsize 12
+        }
         Fl_Group {} {
           label Shading
           private xywh {315 45 120 100} labelfont 1 align 21
@@ -524,6 +530,13 @@ else
         Fl_Input materials_file {
           label {Materials file:}
           private xywh {490 385 120 25} labelsize 12 textsize 12
+        }
+        Fl_Choice anti_aliasing {
+          label {Anti-aliasing:} open
+          private tooltip {Set the maximum degree of anti-aliasing. With Rembrandt enabled, the FXAA option of the graphics drivers should be used instead.} xywh {490 415 120 25} down_box BORDER_BOX labelsize 12 textsize 12
+        } {}
+        Fl_Box {} {
+          xywh {615 475 25 25} resizable
         }
       }
       Fl_Group {page[6]} {
@@ -689,10 +702,47 @@ else
         }
         Fl_Input proxy {
           label {Proxy:}
-          private xywh {240 275 230 25} labelsize 12 textsize 12
+          private xywh {240 400 230 25} labelsize 12 textsize 12
         }
         Fl_Box {} {
           xywh {610 415 25 25} resizable
+        }
+        Fl_Group {} {
+          label {FGCom Options} open
+          xywh {155 266 480 120} box ENGRAVED_FRAME labelfont 1 labelsize 12 align 21
+        } {
+          Fl_Input fgcom_hostname {
+            label {Hostname:}
+            private tooltip {FGCom standalone hostname} xywh {333 349 135 25} labelsize 12 textsize 12 deactivate
+          }
+          Fl_Value_Input fgcom_port {
+            label {Port:}
+            private tooltip {FGCom standalone port} xywh {520 349 85 25} minimum 1025 maximum 65535 value 16661 deactivate
+          }
+          Fl_Box {} {
+            xywh {590 372 40 10} resizable
+          }
+          Fl_Round_Button fgcom_disabled {
+            label Disabled
+            callback {if (o->value()){
+  fgcom_hostname->deactivate();
+  fgcom_port->deactivate();}}
+            private tooltip {Disable FGCom} xywh {241 286 228 15} type Radio down_box ROUND_DOWN_BOX value 1
+          }
+          Fl_Round_Button fgcom_builtin {
+            label {FGCom built-in}
+            callback {if (o->value()){
+  fgcom_hostname->deactivate();
+  fgcom_port->deactivate();}}
+            private tooltip {Enable FGCom built-in} xywh {241 305 224 15} type Radio down_box ROUND_DOWN_BOX
+          }
+          Fl_Round_Button fgcom_standalone {
+            label {FGCom standalone}
+            callback {if (o->value()){
+  fgcom_hostname->activate();
+  fgcom_port->activate();}}
+            private tooltip {Enable FGCom standalone} xywh {241 325 224 15} type Radio down_box ROUND_DOWN_BOX
+          }
         }
       }
       Fl_Group {page[8]} {
@@ -1338,6 +1388,8 @@ else
   decl {static Fl_Menu_Item menu_control[];} {private local
   }
   decl {static Fl_Menu_Item menu_texture_filtering[];} {private local
+  }
+  decl {static Fl_Menu_Item menu_anti_aliasing[];} {private local
   }
   decl {Fl_Preferences& prefs;} {private local
   }

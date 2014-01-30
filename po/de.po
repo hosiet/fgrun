@@ -13,10 +13,10 @@ msgstr ""
 "PO-Revision-Date: 2008-01-30 16:00+0100\n"
 "Last-Translator: Adrian <adrian.sprick@arcor.de>\n"
 "Language-Team: German\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CP1252\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: src/logwin.cxx:34
@@ -159,6 +159,10 @@ msgstr "Flugplatz-Cache:"
 msgid "Airspeed:"
 msgstr "Geschwindigkeit:"
 
+#: src/wizard.fl
+msgid "All airports"
+msgstr ""
+
 #: src/advanced.cxx:989
 msgid "Altitude:"
 msgstr "Höhe:"
@@ -288,10 +292,6 @@ msgstr ""
 msgid "Debugging"
 msgstr ""
 
-#: src/wizard.cxx:1006
-msgid "Defaults"
-msgstr "Zurücksetzen"
-
 #: src/advanced.cxx:1400 src/advanced.cxx:1628 src/advanced.cxx:1691
 #: src/advanced.cxx:1724 src/advanced.cxx:1756 src/wizard.cxx:537
 #: src/wizard.cxx:566 src/wizard.cxx:614
@@ -333,6 +333,14 @@ msgstr "Keiner"
 #: src/wizard.cxx:764
 msgid "Display"
 msgstr "Bildschirm"
+
+#: src/wizard.fl
+msgid "Display all airports"
+msgstr ""
+
+#: src/wizard.fl
+msgid "Display only installed airports"
+msgstr ""
 
 #: src/advanced.cxx:767
 msgid "Display splash screen at startup"
@@ -485,6 +493,14 @@ msgstr ""
 #: src/advanced.cxx:891
 msgid "FDM:"
 msgstr ""
+
+#: src/advanced.cxx:1466
+msgid "FGCom built-in"
+msgstr "FGCom built-in"
+
+#: src/advanced.cxx:1472
+msgid "FGCom standalone"
+msgstr "FGCom standalone"
 
 #: src/wizard.cxx:522
 msgid "FG_AIRCRAFT:"
@@ -714,6 +730,10 @@ msgstr "Input-Portnummer"
 #: src/advanced.cxx:1382 src/advanced_funcs.cxx:222
 msgid "Input/Output"
 msgstr "Ein-/Ausgabe"
+
+#: src/wizard.fl
+msgid "Installed airports"
+msgstr ""
 
 #: src/advanced.cxx:1588
 msgid "Internal"
@@ -1070,6 +1090,10 @@ msgstr "Neustart"
 #: src/wizard.cxx:768
 msgid "Resolution :"
 msgstr "Auflösung :"
+
+#: src/wizard.cxx:1006
+msgid "Restore default settings"
+msgstr "Zurücksetzen"
 
 #: src/advanced.cxx:1020
 msgid "Roll:"
