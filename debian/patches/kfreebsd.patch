@@ -13,16 +13,3 @@ Fixes bug #636366, OLCUC is a linux-specific extention to termios
  
      pid = pty_fork( &master, 0, &term, 0 );
  #else
-@@ -172,7 +176,12 @@
- #if defined(HAVE_TERMIOS_H)
-     struct termios term;
-     tcgetattr( STDOUT_FILENO, &term );
-+    
-+#if defined(OLCUC)
-     term.c_oflag &= ~( OLCUC | ONLCR );
-+#else
-+    term.c_oflag &= ~ONLCR;
-+#endif
- 
-     tsPid = pty_fork( &master, 0, &term, 0 );
- #else
