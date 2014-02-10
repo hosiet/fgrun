@@ -1,4 +1,4 @@
-fgrun (3.0.0~git20140130+80f6df0-1) UNRELEASED; urgency=low
+fgrun (3.0.0~git20140130+80f6df0-1) unstable; urgency=low
 
   [ Rebecca Palmer ]
   * New upstream pre-release.
@@ -17,7 +17,7 @@ fgrun (3.0.0~git20140130+80f6df0-1) UNRELEASED; urgency=low
     installation for ease of use.
   * Add myself as an uploader.
 
- -- Markus Wanner <markus@bluegap.ch>  Thu, 30 Jan 2014 22:31:44 +0100
+ -- Markus Wanner <markus@bluegap.ch>  Mon, 10 Feb 2014 13:37:58 +0100
 
 fgrun (1.7.0-1) unstable; urgency=low
 
