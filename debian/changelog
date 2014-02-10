@@ -6,11 +6,15 @@ fgrun (3.0.0~git20140130+80f6df0-1) UNRELEASED; urgency=low
   * Tweak debian/rules, so we use proper build FLAGS.
   * Update simgear dependency. Closes: #719402, #718378.
   * Add patch to make cmake properly locate fltk-1.3.
+  * Fix an issue with setting the scenery directory
+    (fix-scenery-dir-bug.diff).
 
   [ Markus Wanner ]
   * Bump Standards-Version; no changes needed.
   * Adjust patche fix-cmake-dl.
   * Drop fix-format-string-warning, it got applied upstream.
+  * Add patch to default to the Debian directories used during
+    installation for ease of use.
   * Add myself as an uploader.
 
  -- Markus Wanner <markus@bluegap.ch>  Thu, 30 Jan 2014 22:31:44 +0100
