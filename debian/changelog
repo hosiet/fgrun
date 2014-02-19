@@ -1,3 +1,9 @@
+fgrun (3.0.0-1) unstable; urgency=medium
+
+  * Final upstream release.
+
+ -- Markus Wanner <markus@bluegap.ch>  Wed, 19 Feb 2014 08:42:33 -0800
+
 fgrun (3.0.0~git20140130+80f6df0-1) unstable; urgency=low
 
   [ Rebecca Palmer ]
