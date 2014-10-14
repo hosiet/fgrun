@@ -7,7 +7,7 @@ Uploaders: Christopher Baines <cbaines8@gmail.com>,
 Build-Depends: debhelper (>= 9), cmake, libfltk1.3-dev, fluid,
  libsimgear-dev (>= 2.10.0), libboost-dev,
  zlib1g-dev (>= 1:1.2.3.4.dfsg-3)
-Standards-Version: 3.9.5
+Standards-Version: 3.9.6
 Homepage: http://fgrun.sourceforge.net/
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/fgrun.git
 Vcs-Git: git://anonscm.debian.org/collab-maint/fgrun.git

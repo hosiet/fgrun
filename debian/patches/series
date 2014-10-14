@@ -3,3 +3,4 @@ fix-scenery-dir-bug.diff
 kfreebsd.patch
 fix-cmake-dl
 fltk1-3cmake.diff
+export-env.diff
