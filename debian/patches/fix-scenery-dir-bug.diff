@@ -3,7 +3,7 @@ Author: Rebecca Palmer
 
 --- a/src/wizard_funcs.cxx
 +++ b/src/wizard_funcs.cxx
-@@ -317,6 +317,7 @@
+@@ -335,6 +335,7 @@
      else if (!def_fg_scenery.empty())
      {
          fg_scenery = def_fg_scenery;

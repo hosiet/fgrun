@@ -18,5 +18,5 @@ Author: Markus Wanner <markus@bluegap.ch>
 +std::string def_fg_scenery = "/usr/share/games/flightgear/Scenery";
 +std::string def_ts_exe = "/usr/games/terrasync";
  std::string version = "";
- int def_ts_dir = -1;
- static bool silent = false;
+ std::string def_ts_dir = "";
+ std::string def_acft_dir = "";

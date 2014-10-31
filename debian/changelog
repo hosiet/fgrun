@@ -1,3 +1,12 @@
+fgrun (3.2.0-1~exp1) experimental; urgency=medium
+
+  * New upstream release.
+  * Drop patch fltk1-3cmake.diff, instead enable SHARED_FLTK for the same
+    effect.
+  * Refresh other patches.
+
+ -- Markus Wanner <markus@bluegap.ch>  Fri, 31 Oct 2014 09:48:01 +0100
+
 fgrun (3.0.0-2) unstable; urgency=medium
 
   * Add patch export-env.patch. Closes: #757178.

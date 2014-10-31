@@ -18,7 +18,8 @@ CMAKE_FLAGS = \
 	-DCMAKE_VERBOSE_MAKEFILE=ON \
 	-DCMAKE_INSTALL_PREFIX:PATH=/usr \
 	-DCMAKE_INSTALL_BINDIR:PATH=games \
-	-DSIMGEAR_SHARED:BOOL=ON
+	-DSIMGEAR_SHARED:BOOL=ON \
+	-DSHARED_FLTK:BOOL=ON
 
 %:
 	dh $@ --buildsystem=cmake --builddirectory=build --parallel

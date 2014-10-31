@@ -3,7 +3,7 @@ Author: Christopher Baines <cbaines8@gmail.com>
 
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -212,9 +212,11 @@
+@@ -224,9 +224,11 @@
      endif()
  
      if ( CMAKE_DL_LIBS )
@@ -18,10 +18,10 @@ Author: Christopher Baines <cbaines8@gmail.com>
      message(STATUS "Using FLTK_LIBRARIES for fgrun: ${FLTK_LIBRARIES}")
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -72,6 +72,7 @@
-     ${INTL_LIBRARY}
+@@ -73,6 +73,7 @@
      ${OPENPTY_LIBRARY}
      ${PLATFORM_LIBS}
+     ${OPENGL_LIBRARIES}
 +    ${CMAKE_DL_LIBS}
      )
  
