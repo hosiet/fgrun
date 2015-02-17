@@ -1,6 +1,11 @@
 fgrun (3.4.0-0~exp1) UNRELEASED; urgency=medium
 
+  [ Markus Wanner ]
   * New upstream release.
+
+  [ Rebecca Palmer ]
+  * Drop export-env.diff applied upstream.
+  * Update simgear required version.
 
  -- Markus Wanner <markus@bluegap.ch>  Tue, 17 Feb 2015 14:45:20 +0100
 

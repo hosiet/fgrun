@@ -2,4 +2,3 @@ add-debian-defaults.diff
 fix-scenery-dir-bug.diff
 kfreebsd.patch
 fix-cmake-dl
-export-env.diff
