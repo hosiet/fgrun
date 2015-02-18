@@ -1,4 +1,4 @@
-fgrun (3.4.0-0~exp1) UNRELEASED; urgency=medium
+fgrun (3.4.0-0~exp1) experimental; urgency=medium
 
   [ Markus Wanner ]
   * New upstream release.
@@ -7,7 +7,7 @@ fgrun (3.4.0-0~exp1) UNRELEASED; urgency=medium
   * Drop export-env.diff applied upstream.
   * Update simgear required version.
 
- -- Markus Wanner <markus@bluegap.ch>  Tue, 17 Feb 2015 14:45:20 +0100
+ -- Markus Wanner <markus@bluegap.ch>  Wed, 18 Feb 2015 13:48:49 +0100
 
 fgrun (3.2.0-1~exp1) experimental; urgency=medium
 
