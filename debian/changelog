@@ -1,3 +1,11 @@
+fgrun (3.4.0.final-1) unstable; urgency=medium
+
+  * New upstream version 3.4.0-final.
+  * Update watchfile to handle -final postfix.
+  * Correct d/copyright.
+
+ -- Markus Wanner <markus@bluegap.ch>  Fri, 22 May 2015 20:20:51 +0200
+
 fgrun (3.4.0-0~exp1) experimental; urgency=medium
 
   [ Markus Wanner ]
