@@ -1,3 +1,10 @@
+fgrun (3.4.0.final-2) unstable; urgency=medium
+
+  * Rebuild with gcc5, against renamed simgear.
+  * Drop the menu file as per CTTE #741573.
+
+ -- Markus Wanner <markus@bluegap.ch>  Tue, 10 Nov 2015 19:45:59 +0100
+
 fgrun (3.4.0.final-1) unstable; urgency=medium
 
   * New upstream version 3.4.0-final.
