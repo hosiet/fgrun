@@ -1,3 +1,13 @@
+fgrun (3.4.0.final-3) unstable; urgency=medium
+
+  [ Gianfranco Costamagna ]
+  * Rebase patches to be Debian friendly and fix build failures
+    Closes: #830421
+  * Bump std-version to 3.9.8, no changes required.
+  * Make VCS fields in secure mode, and fix VCS-GIT
+
+ -- Markus Wanner <markus@bluegap.ch>  Sun, 24 Jul 2016 10:25:55 +0200
+
 fgrun (3.4.0.final-2) unstable; urgency=medium
 
   * Rebuild with gcc5, against renamed simgear.
