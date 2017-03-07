@@ -20,7 +20,7 @@ set(CMAKE_RELWITHDEBINFO_POSTFIX "" CACHE STRING "add a postfix, usually empty o
 set(CMAKE_MINSIZEREL_POSTFIX "" CACHE STRING "add a postfix, usually empty on windows")
 
 file(READ version versionFile)
-string(STRIP ${versionFile} FGRUN_VERSION) 
+string(STRIP ${versionFile} FGRUN_VERSION)
 
 #packaging
 SET(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/COPYING")
@@ -33,7 +33,7 @@ SET(CPACK_INSTALL_CMAKE_PROJECTS  ${CMAKE_CURRENT_BINARY_DIR};FGRun;ALL;/)
 
 # split version string into components, note CMAKE_MATCH_0 is the entire regexp match
 string(REGEX MATCH "([0-9]+)\\.([0-9]+)" CPACK_PACKAGE_VERSION ${FGRUN_VERSION} )
-set(CPACK_PACKAGE_VERSION_MAJOR ${CMAKE_MATCH_1}) 
+set(CPACK_PACKAGE_VERSION_MAJOR ${CMAKE_MATCH_1})
 set(CPACK_PACKAGE_VERSION_MINOR ${CMAKE_MATCH_2})
 
 message(STATUS "version is ${CPACK_PACKAGE_VERSION_MAJOR} dot ${CPACK_PACKAGE_VERSION_MINOR}")
@@ -66,7 +66,7 @@ if (MSVC)
     else (EXISTS ${TEST_3RDPARTY_DIR})
         set(MSVC_3RDPARTY_ROOT NOT_FOUND CACHE PATH "Location where the third-party dependencies are extracted")
     endif (EXISTS ${TEST_3RDPARTY_DIR})
-    list(APPEND PLATFORM_LIBS "winmm.lib")
+    list(APPEND PLATFORM_LIBS "winmm.lib" "Shlwapi.lib")
 else (MSVC)
     set(MSVC_3RDPARTY_ROOT NOT_FOUND CACHE PATH "Location where the third-party dependencies are extracted")
 endif (MSVC)
@@ -75,13 +75,16 @@ if (MSVC AND MSVC_3RDPARTY_ROOT)
 
   message(STATUS "3rdparty files located in ${MSVC_3RDPARTY_ROOT}")
   set( OSG_MSVC "msvc" )
-  if (${MSVC_VERSION} EQUAL 1700)
+  if (${MSVC_VERSION} EQUAL 1900)
+      set( OSG_MSVC ${OSG_MSVC}140 )
+  elseif (${MSVC_VERSION} EQUAL 1800)
+      set( OSG_MSVC ${OSG_MSVC}120 )
+  elseif (${MSVC_VERSION} EQUAL 1700)
       set( OSG_MSVC ${OSG_MSVC}110 )
   elseif (${MSVC_VERSION} EQUAL 1600)
       set( OSG_MSVC ${OSG_MSVC}100 )
-  else (${MSVC_VERSION} EQUAL 1700)
-      set( OSG_MSVC ${OSG_MSVC}90 )
-  endif (${MSVC_VERSION} EQUAL 1700)
+  endif ()
+
   if (CMAKE_CL_64)
       set( OSG_MSVC ${OSG_MSVC}-64 )
       set( MSVC_3RDPARTY_DIR 3rdParty.x64 )
@@ -97,7 +100,10 @@ if (MSVC AND MSVC_3RDPARTY_ROOT)
 
   set (CMAKE_LIBRARY_PATH ${FLTK_DIR}/lib ${MSVC_3RDPARTY_ROOT}/${MSVC_3RDPARTY_DIR}/lib ${MSVC_3RDPARTY_ROOT}/install/${OSG_MSVC}/OpenScenegraph/lib ${MSVC_3RDPARTY_ROOT}/install/${OSG_MSVC}/SimGear/lib )
   set (CMAKE_INCLUDE_PATH ${FLTK_DIR}/include ${MSVC_3RDPARTY_ROOT}/${MSVC_3RDPARTY_DIR}/include ${MSVC_3RDPARTY_ROOT}/install/${OSG_MSVC}/OpenScenegraph/include ${MSVC_3RDPARTY_ROOT}/install/${OSG_MSVC}/SimGear/include)
+
+  GET_FILENAME_COMPONENT(MSVC_ROOT_PARENT_DIR ${MSVC_3RDPARTY_ROOT} PATH)
   find_path(BOOST_ROOT boost/version.hpp
+      ${MSVC_ROOT_PARENT_DIR}
 			${MSVC_3RDPARTY_ROOT}/boost
 			${MSVC_3RDPARTY_ROOT}/boost_1_51_0
 			${MSVC_3RDPARTY_ROOT}/boost_1_50_0
@@ -124,8 +130,8 @@ if(WIN32)
 
     set(NOMINMAX 1)
     set( WINSOCK_LIBRARY "ws2_32.lib" )
-    
-endif(WIN32)    
+
+endif(WIN32)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${WARNING_FLAGS} ${MSVC_FLAGS} -D_REENTRANT")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WARNING_FLAGS} ${MSVC_FLAGS} -D_REENTRANT")
@@ -170,7 +176,7 @@ if (ENABLE_NLS AND GETTEXT_FOUND)
 	if (ENABLE_NLS)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_NLS")
 	endif (ENABLE_NLS)
-    
+
 else (ENABLE_NLS AND GETTEXT_FOUND)
 
     set( INTL_LIBRARY "" )
@@ -224,7 +230,7 @@ if ( FLTK_FOUND )
     endif()
 
     if ( CMAKE_DL_LIBS )
-       list(APPEND FLTK_LIBRARIES ${CMAKE_DL_LIBS}) 
+       list(APPEND FLTK_LIBRARIES ${CMAKE_DL_LIBS})
     endif()
 
     set( CMAKE_REQUIRED_INCLUDES ${FLTK_INCLUDE_DIR} )
@@ -240,7 +246,7 @@ if ( FLTK_FOUND )
         HAVE_FLTK_1_3)
 
 	if ( NOT HAVE_FLTK_1_3 )
-		message( SEND_ERROR "FLTK 1.3 is required" ) 
+		message( SEND_ERROR "FLTK 1.3 is required" )
 	endif ( NOT HAVE_FLTK_1_3 )
 
 endif ( FLTK_FOUND )
