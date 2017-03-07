@@ -7,7 +7,7 @@ Files: *
 Copyright: 2010, Bernie Bright
            2010, Frederic Bouvier
 License: GPL-2+
- 
+
 Files: src/Fl_Table.cxx
  src/Fl_Table.H
  src/Fl_Table_Row.cxx
@@ -47,4 +47,3 @@ License: LGPL-2+
  .
  A copy of the license is available on Debian systems at
  /usr/share/common-licenses/LGPL-2
-

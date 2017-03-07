@@ -1,14 +1,18 @@
-Description: tell cmake to link against libdl
-Author: Christopher Baines <cbaines8@gmail.com>
+From: Christopher Baines <cbaines8@gmail.com>
+Date: Thu, 30 Jan 2014 22:33:23 +0100
+Subject: tell cmake to link against libdl
 
+---
+ CMakeLists.txt     | 2 ++
+ src/CMakeLists.txt | 1 +
+ 2 files changed, 3 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 4de3865..03f3e47 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -224,9 +224,11 @@
-     endif()
- 
-     if ( CMAKE_DL_LIBS )
--       list(APPEND FLTK_LIBRARIES ${CMAKE_DL_LIBS}) 
-+       list(APPEND FLTK_LIBRARIES ${CMAKE_DL_LIBS})
+@@ -233,6 +233,8 @@ if ( FLTK_FOUND )
+        list(APPEND FLTK_LIBRARIES ${CMAKE_DL_LIBS})
      endif()
  
 +    list(APPEND FLTK_LIBRARIES ${CMAKE_DL_LIBS})
@@ -16,9 +20,11 @@ Author: Christopher Baines <cbaines8@gmail.com>
      set( CMAKE_REQUIRED_INCLUDES ${FLTK_INCLUDE_DIR} )
      set( CMAKE_REQUIRED_LIBRARIES ${FLTK_LIBRARIES} )
      message(STATUS "Using FLTK_LIBRARIES for fgrun: ${FLTK_LIBRARIES}")
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 8d51267..f32e1c2 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -73,6 +73,7 @@
+@@ -73,6 +73,7 @@ target_link_libraries(fgrun
      ${OPENPTY_LIBRARY}
      ${PLATFORM_LIBS}
      ${OPENGL_LIBRARIES}

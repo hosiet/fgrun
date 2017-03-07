@@ -2,20 +2,31 @@ Source: fgrun
 Section: games
 Priority: optional
 Maintainer: Debian FlightGear Crew <pkg-fgfs-crew@lists.alioth.debian.org>
-Uploaders: Christopher Baines <cbaines8@gmail.com>,
- Markus Wanner <markus@bluegap.ch>
-Build-Depends: debhelper (>= 9), cmake, libfltk1.3-dev, fluid,
- libsimgear-dev (>= 3.4.0~), libboost-dev, libexpat-dev,
- zlib1g-dev (>= 1:1.2.3.4.dfsg-3)
+Uploaders:
+ Christopher Baines <cbaines8@gmail.com>,
+ Boyuan Yang <073plan@gmail.com>,
+ Markus Wanner <markus@bluegap.ch>,
+Build-Depends:
+ cmake,
+ debhelper (>= 10~),
+ fluid,
+ libboost-dev,
+ libexpat-dev,
+ libfltk1.3-dev,
+ libsimgear-dev (>= 3.4.0~),
+ zlib1g-dev (>= 1:1.2.3.4.dfsg-3),
 Standards-Version: 3.9.8
-Homepage: http://fgrun.sourceforge.net/
+Homepage: https://sourceforge.net/p/flightgear/fgrun/
 Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/fgrun.git
 Vcs-Git: https://anonscm.debian.org/git/collab-maint/fgrun.git
 
 Package: fgrun
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Recommends: flightgear
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends},
+Recommends:
+ flightgear,
 Description: graphical frontend for running FlightGear
  FlightGear Launch Control (FGRun) is a graphical frontend for running the
  FlightGear Flight Simulator (fgfs).

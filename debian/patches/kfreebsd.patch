@@ -1,7 +1,17 @@
+From: Debian FlightGear Crew <pkg-fgfs-crew@lists.alioth.debian.org>
+Date: Wed, 9 Nov 2011 11:18:56 +0000
+Subject: kfreebsd
+
 Fixes bug #636366, OLCUC is a linux-specific extention to termios
+---
+ src/run_posix.cxx | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/run_posix.cxx b/src/run_posix.cxx
+index 166203b..9adfc31 100644
 --- a/src/run_posix.cxx
 +++ b/src/run_posix.cxx
-@@ -60,7 +60,11 @@
+@@ -60,7 +60,11 @@ Wizard::run_fgfs( const std::string &args )
  #if defined(HAVE_TERMIOS_H)
      struct termios term;
      tcgetattr( STDOUT_FILENO, &term );

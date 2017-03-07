@@ -1,3 +1,19 @@
+fgrun (2016.4.0-0.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+    + Acked by original maintainer.
+  * New upstream release. (Closes: #839357)
+    - Drop patches applied upstream.
+    - Refresh patches.
+  * Add myself onto uploaders list.
+  * Switch upstream to GitHub mirror.
+    - Update corresponding debian/watch file using GitHub. (Closes: #851845)
+  * Bump debhelper compat version to v10.
+  * Apply "wrap-and-sort -abst".
+  * Update Homepage information on SourceForge.
+
+ -- Boyuan Yang <073plan@gmail.com>  Tue, 11 Apr 2017 17:55:46 +0800
+
 fgrun (3.4.0.final-3) unstable; urgency=medium
 
   [ Gianfranco Costamagna ]

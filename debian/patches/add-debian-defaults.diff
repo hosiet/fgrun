@@ -1,8 +1,15 @@
-Description: Add default directories used by Debian
- If not given, fgrun asks the user to provide several directories. We
- ease this process by defaulting to the install locations used by Debian.
-Author: Markus Wanner <markus@bluegap.ch>
+From: Markus Wanner <markus@bluegap.ch>
+Date: Mon, 10 Feb 2014 13:37:04 +0100
+Subject: Add default directories used by Debian
 
+If not given, fgrun asks the user to provide several directories. We
+ease this process by defaulting to the install locations used by Debian.
+---
+ src/main.cxx | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/main.cxx b/src/main.cxx
+index c9aee92..cf51f07 100644
 --- a/src/main.cxx
 +++ b/src/main.cxx
 @@ -37,10 +37,10 @@
